@@ -4,26 +4,49 @@
   <meta charset="UTF-8">
   <title>TGG-Editor</title>
 
+  <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.min.css" />
   <link rel="stylesheet" type="text/css" href="node_modules/jointjs/dist/joint.min.css" />
   <link rel="stylesheet" type="text/css" href="css/style.css" />
+
   <script src="node_modules/jquery/dist/jquery.min.js"></script>
   <script src="node_modules/lodash/index.js"></script>
   <script src="node_modules/backbone/backbone-min.js"></script>
   <script src="node_modules/jointjs/dist/joint.min.js"></script>
   <script src="node_modules/jointjs/dist/joint.shapes.devs.min.js"></script>
+  <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 
 </head>
 <body>
-<header id="stencilArea">
-  <div id="stencil"></div>
-</header>
-<section id="paperArea">
-  <div id="paper"></div>
-</section>
-<footer id="toolbox">
-
-</footer>
-
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">TGG Editor</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+    <div class="container">
+      <div class="row" id="stencilArea">
+        <div id="stencil"></div>
+      </div>
+      <div class="row" id="paperArea">
+        <div id="paper"></div>
+      </div>
+      <div class="row" id="toolbox">
+      </div>
+    </div>
 
 <script type="text/javascript">
 
