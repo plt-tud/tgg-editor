@@ -42,7 +42,7 @@
         <div id="stencil"></div>
       </div>
       <div class="row" id="paperArea">
-        <div id="paper"></div>
+          <div id="paper"></div>
       </div>
       <div class="row" id="toolbox">
       </div>
@@ -63,8 +63,8 @@
   var graph = new joint.dia.Graph;
   var paper = new joint.dia.Paper({
     el: $('#paper'),
-    height: $('#paperArea').height(),
-    width: $('#paperArea').width(),
+    height: $('#paperArea').height()-15,
+    width: $('#paperArea').width()-15,
     model: graph,
     gridSize: 15,
     drawGrid: true,
@@ -80,8 +80,8 @@ console.log("All events", evt, x, y);
   var stencilGraph = new joint.dia.Graph;
   var stencilPaper = new joint.dia.Paper({
       el: $('#stencil'),
-      height: 100,
-      width: 600,
+      height: $('#stencilArea').height()-15,
+      width: $('#paperArea').width()-15,
       model: stencilGraph,
       interactive: false,
       background: {
@@ -129,7 +129,7 @@ console.log("All events", evt, x, y);
                 text: { text: 'NAC Node', fill: 'black' },
               },
       /* Weitere Attribute des Knotens*/
-      nodeAttr: { 'type': 'contextNode' }
+      nodeAttr: { 'type': 'nacNode' }
   });
 
   var constraintNode = new joint.shapes.basic.Rect({
@@ -142,7 +142,7 @@ console.log("All events", evt, x, y);
                 text: { text: 'Constraint Node', fill: 'black' },
               },
       /* Weitere Attribute des Knotens*/
-      nodeAttr: { 'type': 'corrNode' }
+      nodeAttr: { 'type': 'constraintNode' }
   });
 
   var corrNode = new joint.shapes.basic.Path({
@@ -290,6 +290,8 @@ var height = 0;
             var elemStr = '<div id="toolboxSection"><ul><li>';
             elemStr += '<label>Name:</label>';
             elemStr += '<input class="input" id="nodeName" value="' + cellView.model.get('attrs').text.text + '"/></li>';
+            elemStr += '<label>Domain:</label>';
+            elemStr += '<input class="input" id="nodeDomain" value="' + cellView.model.get('attrs').text.text + '"/></li>';
             elemStr += '<li><label>Type:</label><select class="input" id="nodeType">';
             switch(cellView.model.get('nodeAttr').type) {
               case "contextNode":
@@ -368,6 +370,10 @@ var height = 0;
 
             cellView.model.on('change:position', function() {
               $(".editNode").css('margin', (cellView.model.get('position').y - 20) + 'px 0 0 ' + (cellView.model.get('position').x - 20) + 'px');
+              paper.fitToContent({
+                  minWidth: $('#paperArea').width()-15,
+                    minHeight: $('#paperArea').height()-15
+              });
             });
 
             $(document).ready(function(){
@@ -410,7 +416,26 @@ var height = 0;
 
               $(".addLinkBtn").click(function() {
                 $(".editNode").append("<div class='btnMenu'></div>");
-                $(".btnMenu").append("<ul><li id='newCorrLink'>Correspondence Link</li><li id='newRelatLink'>Relation Link</li></ul>");
+                $(".btnMenu").append("<ul id='btnMenuList'>");
+                console.log("Hier");
+                switch(cellView.model.get('nodeAttr').type) {
+                  case "contextNode":
+                    $("#btnMenuList").append("<li id='newCorrLink'>Correspondence Link</li>");
+                    $("#btnMenuList").append("<li id='newRelatLink'>Relation Link</li>");
+                    break;
+                  case "produceNode":
+                    $("#btnMenuList").append("<li id='newCorrLink'>Correspondence Link</li>");
+                    $("#btnMenuList").append("<li id='newRelatLink'>Relation Link</li>");
+                    break;
+                  case "nacNode":
+                    $("#btnMenuList").append("<li id='newRelatLink'>Relation Link</li>");
+                    console.log("Hier23");
+                    break;
+                  case "constraintNode":
+                    $("#btnMenuList").append("<li id='newRelatLink'>Relation Link</li>");
+                    console.log("Hier545");
+                    break;
+                }
 
                 /* Füge eine Correspondence hinzu */
                 $("#newCorrLink").click(function() {
@@ -501,6 +526,7 @@ var height = 0;
 
                   // Von welchem Typ ist der Anfangsknoten?
                   var color = 0;
+                  var strokeDasharray = 0;
                   switch(cellView.model.get('nodeAttr').type) {
                     case "contextNode":
                       color = contextNodeColor;
@@ -513,6 +539,7 @@ var height = 0;
                       break;
                     case "constraintNode":
                       color = constraintNodeColor;
+                      strokeDasharray = 2,5;
                       break;
                     }
 
@@ -522,7 +549,9 @@ var height = 0;
                       'source': { id : cellView.model.get('id') },
                       'target': { x: x, y: y },
                       'attrs': { '.connection': {
-                                  'stroke-width': 1.5, stroke: color}
+                                  'stroke-width': 1.5,
+                                  stroke: color,
+                                  'stroke-dasharray': strokeDasharray}
                                 },
                     })
                     .addTo(paper.model)
@@ -575,26 +604,6 @@ var height = 0;
 
       paper.on('cell:pointerdblclick', function (cellView) {
         cellView.model.attr({rect: { fill: 'red' }});
-      });
-
-      $(window).resize(function() {
-        var height = 0;
-        var width = 0;
-        if($('#paperArea').width() > 500) {
-          width = $('#paperArea').width();
-
-        }
-        else {
-          width = 500;
-        }
-
-        if($('#paperArea').height() > 300) {
-          height = $('#paperArea').height();
-        }
-        else {
-          height = 300;
-        }
-        paper.setDimensions(width, height);
       });
 
     </script>

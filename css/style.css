@@ -14,8 +14,8 @@ body {
 #stencilArea {
   background-color: #BDBDBD;
   display: flex;
-  height: 100px;
-  width: 100%;
+  height: 85px;
+  width: 100%px;
 }
 
 #stencil {
@@ -23,9 +23,10 @@ body {
 }
 
 #paperArea {
-
   height: 500px;
   width: 100%;
+  overflow: scroll;
+  top: 5px;
 }
 
 #paper {
