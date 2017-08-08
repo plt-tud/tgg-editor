@@ -586,15 +586,9 @@ var selectedCell = null;
       });
 
       paper.on('blank:pointerdown', function(evt, x, y) {
-        selectedCell.unhighlight();
+        if (selectedCell) selectedCell.unhighlight();
         $(".editNode").remove();
-
         $("#toolboxSection").remove();
-
-      });
-
-      paper.on('cell:pointerdblclick', function (cellView) {
-        cellView.model.attr({rect: { fill: 'red' }});
       });
 
     </script>
