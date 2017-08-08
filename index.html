@@ -87,7 +87,7 @@ console.log("All events", evt, x, y);
   var stencilPaper = new joint.dia.Paper({
       el: $('#stencil'),
       height: $('#stencilArea').height()-15,
-      width: $('#paperArea').width()-15,
+      width: $('#stencilArea').width()-15,
       model: stencilGraph,
       interactive: false,
       background: {
@@ -104,26 +104,27 @@ console.log("All events", evt, x, y);
   var Node = joint.shapes.basic.Rect.define('tgg.node.BasicNode', {
     markup: '<g class="scalable node"><rect/></g><text/>',
     size: { width: 115, height: 30 },
+    domain: null
   });
 
   var ProduceNode = Node.define('tgg.node.ProduceNode', {
     markup: '<g class="scalable node produceNode"><rect/></g><text/>',
-    nodeAttr: { 'type': 'produceNode' }
+    nodeType: 'produceNode'
   });
 
   var ContextNode = Node.define('tgg.node.ContextNode', {
       markup: '<g class="scalable node contextNode"><rect/></g><text/>',
-      nodeAttr: { 'type': 'contextNode' }
+      nodeType: 'contextNode'
   });
 
   var NacNode = Node.define('tgg.node.NacNode', {
       markup: '<g class="scalable node nacNode"><rect/></g><text/>',
-      nodeAttr: { 'type': 'nacNode' }
+      nodeType: 'nacNode'
   });
 
   var ConstraintNode = Node.define('tgg.node.ConstraintNode', {
       markup: '<g class="scalable node constraintNode"><rect/></g><text/>',
-      nodeAttr: { 'type': 'constraintNode' }
+      nodeType: 'constraintNode'
   });
 
   var produceNode = new ProduceNode({
@@ -159,7 +160,7 @@ console.log("All events", evt, x, y);
       },
     },
     /* Weitere Attribute des Knotens*/
-    nodeAttr: { 'type': 'corrNode' }
+    nodeType: 'corrNode'
   });
 
   stencilGraph.addCells([produceNode, contextNode, constraintNode, nacNode]);
@@ -313,7 +314,11 @@ var selectedCell = null;
                 </li>
                 <li>
                   <label>Domain:</label>
-                  <input class="input" id="domain" value="${cellView.model.get('domain')}"/>
+                  <select class="input" id="domain">
+                    <option value="source">Source Model</option>
+                    <option value="correspondence">Correspondence Model</option>
+                    <option value="target">Target Model</option>
+                </select>
                 </li>
                 <li>
                   <label>Type:</label>
@@ -327,14 +332,19 @@ var selectedCell = null;
               </ul>
             </div>`;
             $("#toolbox").append(elemStr);
-            $('#nodeType').val(cellView.model.get('nodeAttr').type);
+            $('#nodeType').val(cellView.model.get('nodeType'));
+            $('#domain').val(cellView.model.get('domain'));
 
             $("#nodeName").keyup(function(){
               cellView.model.attr('text/text', $("#nodeName").val());
             });
 
+            $("#domain").change(function(){
+              cellView.model.set('domain', $("#domain").val());
+            });
+
             $("#nodeType").change(function(){
-              cellView.model.set('nodeAttr', {type : $("#nodeType").val()});
+              cellView.model.set('nodeType', $("#nodeType").val());
                 var el = V(cellView.el).findOne("g");
                 el.removeClass("contextNode")
                   .removeClass("produceNode")
@@ -343,7 +353,7 @@ var selectedCell = null;
                   .addClass($("#nodeType").val());
 
                 if(cellView.model.get('type') == 'basic.Path') {
-                  switch(cellView.model.get('nodeAttr').type) {
+                  switch(cellView.model.get('nodeType')) {
                     case "contextNode":
                       cellView.model.attr('path/stroke', contextNodeColor);
                       cellView.model.attr('path/stroke-dasharray', '0');
@@ -407,7 +417,7 @@ var selectedCell = null;
                 $(".editNode").append("<div class='btnMenu'></div>");
                 $(".btnMenu").append("<ul id='btnMenuList'>");
                 console.log("Hier");
-                switch(cellView.model.get('nodeAttr').type) {
+                switch(cellView.model.get('nodeType')) {
                   case "contextNode":
                     $("#btnMenuList").append("<li id='newCorrLink'>Correspondence Link</li>");
                     $("#btnMenuList").append("<li id='newRelatLink'>Relation Link</li>");
@@ -435,14 +445,14 @@ var selectedCell = null;
 
                   // Von welchem Typ ist der Anfangsknoten?
                   var color = 0;
-                  switch(cellView.model.get('nodeAttr').type) {
+                  switch(cellView.model.get('nodeType')) {
                     case "contextNode":
-                      newCorrNode.set('nodeAttr', { type: "contextNode"});
+                      newCorrNode.set('nodeType', "contextNode");
                       newCorrNode.attr('path/stroke', contextNodeColor);
                       color = contextNodeColor;
                       break;
                     case "produceNode":
-                      newCorrNode.set('nodeAttr', { type: "produceNode"});
+                      newCorrNode.set('nodeType', "produceNode");
                       newCorrNode.attr('path/stroke', produceNodeColor);
                       color = produceNodeColor;
                       break;
@@ -516,7 +526,7 @@ var selectedCell = null;
                   // Von welchem Typ ist der Anfangsknoten?
                   var color = 0;
                   var strokeDasharray = 0;
-                  switch(cellView.model.get('nodeAttr').type) {
+                  switch(cellView.model.get('nodeType')) {
                     case "contextNode":
                       color = contextNodeColor;
                       break;
