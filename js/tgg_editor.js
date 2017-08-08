@@ -181,12 +181,17 @@ paper.on('cell:pointerdown', function (cellView, evt, x, y) {
       $("#toolboxSection").remove();
       var size = cellView.model.get('size');
       var position = cellView.model.get('position');
-      $("#paper").append("<div class='editNode' model-id='" + cellView.model.get('id') + "' style='position:absolute;margin: " + (position.y - 20) + "px 0 0 " + (position.x - 20) + "px;height:" + (size.height + 40) + "px;width:" + (size.width + 40) + "px'></div>");
-      $(".editNode").append("<button class='deleteBtn'></button>")
-      $(".editNode").append("<button class='resizeBtn'></button>")
-      if(cellView.model.get('type').startsWith('tgg.node')) {
-        $(".editNode").append("<button class='addLinkBtn'></button>")
-      }
+      $("#paper").append(`
+        <div class='editNode' model-id="${cellView.model.get('id')}"
+              style="position: absolute;
+                    margin: ${position.y - 20}px 0 0 ${position.x - 20}px;
+                    height: ${size.height + 40}px;
+                    width:  ${size.width + 40}px">
+          <button class='deleteBtn'></button>
+          <button class='resizeBtn'></button>
+          <button class='addLinkBtn'></button>
+        </div>
+      `);
 
       var elemStr = `
       <div id="toolboxSection" class="form-inline">
