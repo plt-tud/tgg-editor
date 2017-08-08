@@ -287,44 +287,6 @@ var height = 0;
               $(".editNode").append("<button class='addLinkBtn'></button>")
             }
 
-<<<<<<< HEAD
-            var elemStr = '<div id="toolboxSection"><ul><li>';
-            elemStr += '<label>Name:</label>';
-            elemStr += '<input class="input" id="nodeName" value="' + cellView.model.get('attrs').text.text + '"/></li>';
-            elemStr += '<label>Domain:</label>';
-            elemStr += '<input class="input" id="nodeDomain" value="' + cellView.model.get('attrs').text.text + '"/></li>';
-            elemStr += '<li><label>Type:</label><select class="input" id="nodeType">';
-            switch(cellView.model.get('nodeAttr').type) {
-              case "contextNode":
-                elemStr += '<option value="produceNode">Produce Node</option>';
-                elemStr += '<option value="contextNode" selected>Context Node</option>';
-                elemStr += '<option value="nacNode">NAC Node</option>';
-                elemStr += '<option value="constraintNode">Contraint Node</option>';
-                break;
-              case "produceNode":
-                elemStr += '<option value="produceNode" selected>Produce Node</option>';
-                elemStr += '<option value="contextNode">Context Node</option>';
-                elemStr += '<option value="nacNode">NAC Node</option>';
-                elemStr += '<option value="constraintNode">Contraint Node</option>';
-                break;
-              case "nacNode":
-                elemStr += '<option value="produceNode">Produce Node</option>';
-                elemStr += '<option value="contextNode">Context Node</option>';
-                elemStr += '<option value="nacNode" selected>NAC Node</option>';
-                elemStr += '<option value="constraintNode">Contraint Node</option>';
-                break;
-              case "constraintNode":
-                elemStr += '<option value="produceNode">Produce Node</option>';
-                elemStr += '<option value="contextNode">Context Node</option>';
-                elemStr += '<option value="nacNode">NAC Node</option>';
-                elemStr += '<option value="constraintNode" selected>Contraint Node</option>';
-                break;
-              default:
-                elemStr += '';
-              }
-
-            elemStr += '</select></li></ul></div>';
-=======
             var elemStr = `
             <div id="toolboxSection">
               <ul>
@@ -347,7 +309,6 @@ var height = 0;
                 </li>
               </ul>
             </div>`;
->>>>>>> 69f1b5e5aadb57e6b4924d87014bdf6103aa8d88
             $("#toolbox").append(elemStr);
             $('#nodeType').val(cellView.model.get('nodeAttr').type);
 
