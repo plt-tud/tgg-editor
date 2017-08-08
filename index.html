@@ -166,14 +166,26 @@ console.log("All events", evt, x, y);
   stencilGraph.addCells([produceNode, contextNode, constraintNode, nacNode]);
 
   /* Example Graph */
-  var rect2 = contextNode.clone();
-  rect2.position(100, 50);
-  rect2.attr('text/text', "?device");
-  var rect3 = contextNode.clone();
-  rect3.position(300, 50);
-  rect3.attr('text/text', "mso:Pump");
-  var rect4 = (new ProduceNode).attr('text/text', "?fitting").position(100, 150).addTo(graph);
-  var rect5 = (new ProduceNode).attr('text/text', "mso:Fitting").position(300, 150).addTo(graph);
+  var rect2 = new ContextNode({
+    position: {x: 100, y: 50},
+    attrs: { text: {text: "?device"} },
+    domain: "source"
+  }).addTo(graph);
+  var rect3 = new ContextNode({
+    position: {x: 300, y: 50},
+    attrs: { text: {text: "mso:Pump"} },
+    domain: "source"
+  }).addTo(graph);
+  var rect4 = new ProduceNode({
+    position: {x: 100, y: 150},
+    attrs: { text: {text: "?fitting"} },
+    domain: "source"
+  }).addTo(graph);
+  var rect5 = new ProduceNode({
+    position: {x: 300, y: 150},
+    attrs: { text: {text: "mso:Fitting"} },
+    domain: "source"
+  }).addTo(graph);
 
   var link = new joint.dia.Link({
       source: { id: rect4.id },
@@ -183,7 +195,7 @@ console.log("All events", evt, x, y);
             'stroke-width': 1.5, stroke: '#00b500'}
         },
         class: "test"
-  });
+  }).addTo(graph);
   link.label(0, {
     position: .5,
     attrs: {
@@ -197,8 +209,7 @@ console.log("All events", evt, x, y);
       attrs: { '.connection': {
             'stroke-width': 1.5, stroke: '#00b500'}
         },
-  });
-  graph.addCells([rect4, rect2, rect3, link, link2]);
+  }).addTo(graph);
 
   /* Event Handling */
   stencilPaper.on('cell:pointerdown', function(cellView, e, x, y) {
