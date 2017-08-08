@@ -271,10 +271,16 @@ var firstClickX = 0;
 var firstClickY = 0;
 var width = 0;
 var height = 0;
+var selectedCell = null;
 
       paper.on('cell:pointerdown', function (cellView, evt, x, y) {
+        if (selectedCell) {
+          selectedCell.unhighlight();
+        }
         console.log(cellView.model);
         if(cellView.model.get('type') == 'basic.Path' || cellView.model.get('type') == 'basic.Rect') {
+        selectedCell = cellView;
+        selectedCell.highlight();
           if($(".editNode").attr('model-id') != cellView.model.get('id')) {
             $(".editNode").remove();
             $("#toolboxSection").remove();
