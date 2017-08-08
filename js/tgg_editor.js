@@ -189,30 +189,28 @@ paper.on('cell:pointerdown', function (cellView, evt, x, y) {
       }
 
       var elemStr = `
-      <div id="toolboxSection">
-        <ul>
-          <li>
-            <label>Name:</label>
-            <input class="input" id="nodeName" value="${cellView.model.get('attrs').text.text}"/>
-          </li>
-          <li>
+      <div id="toolboxSection" class="form-inline">
+          <div class="form-group">
+            <label>Name</label>
+            <input class="form-control" id="nodeName" value="${cellView.model.get('attrs').text.text}"/>
+          </div>
+          <div class="form-group">
             <label>Domain:</label>
-            <select class="input" id="domain">
+            <select class="form-control" id="domain">
               <option value="source">Source Model</option>
               <option value="correspondence">Correspondence Model</option>
               <option value="target">Target Model</option>
-          </select>
-          </li>
-          <li>
+            </select>
+          </div>
+          <div class="form-group">
             <label>Type:</label>
-            <select class="input" id="nodeType">
+            <select class="form-control" id="nodeType">
               <option value="produceNode">Produce Node</option>
               <option value="contextNode">Context Node</option>
               <option value="nacNode">NAC Node</option>
               <option value="constraintNode">Constraint Node</option>
             </select>
-          </li>
-        </ul>
+          </div>
       </div>`;
       $("#toolbox").append(elemStr);
       $('#nodeType').val(cellView.model.get('nodeType'));
