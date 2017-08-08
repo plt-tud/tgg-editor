@@ -172,7 +172,11 @@ paper.on('cell:pointerdown', function (cellView, evt, x, y) {
   if (selectedCell) {
     selectedCell.unhighlight();
   }
-  console.log(cellView.model);
+  var cell = cellView.model;
+  if (cell.get('parent')) {
+    graph.getCell(cell.get('parent')).unembed(cell);
+ }
+
   selectedCell = cellView;
   selectedCell.highlight();
   if( cellView.model.get('type').startsWith('tgg.node')) {
@@ -479,6 +483,24 @@ paper.on('cell:pointerdown', function (cellView, evt, x, y) {
       });
     }
   }
+});
+
+// See for nested graphs: http://resources.jointjs.com/tutorial/hierarchy
+paper.on('cell:pointerup', function(cellView, evt, x, y) {
+
+    var cell = cellView.model;
+    var cellViewsBelow = paper.findViewsFromPoint(cell.getBBox().center());
+
+    if (cellViewsBelow.length) {
+        // Note that the findViewsFromPoint() returns the view for the `cell` itself.
+        var cellViewBelow = _.find(cellViewsBelow, function(c) { return c.model.id !== cell.id });
+
+        // Prevent recursive embedding.
+        if (cellViewBelow && cellViewBelow.model.get('parent') !== cell.id) {
+            cellViewBelow.model.embed(cell);
+            cell.set("domain", cellViewBelow.model.get('domain'));
+        }
+    }
 });
 
 paper.on('blank:pointerdown', function(evt, x, y) {
