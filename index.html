@@ -101,60 +101,52 @@ console.log("All events", evt, x, y);
     var nacNodeColor = "red";
     var constraintNodeColor = "black";
 
-  var Node = joint.shapes.basic.Rect.define('tgg.Node', {
+  var Node = joint.shapes.basic.Rect.define('tgg.node.BasicNode', {
     markup: '<g class="scalable node"><rect/></g><text/>',
     size: { width: 115, height: 30 },
   });
 
-  var ProduceNode = Node.define('tgg.ProduceNode', {
+  var ProduceNode = Node.define('tgg.node.ProduceNode', {
     markup: '<g class="scalable node produceNode"><rect/></g><text/>',
     nodeAttr: { 'type': 'produceNode' }
   });
 
-  var produceNode = (new ProduceNode({
-    position: { x: 10, y: 30 },
-    attrs: { text: {text: "Produce Node"}}})
-  ).addTo(stencilGraph);
-
-  var contextNode = new joint.shapes.basic.Rect({
-      position: { x: 140, y: 30 },
-      size: { width: 115, height: 30 },
-      attrs: {  rect: { fill: 'white', 'stroke-width': '1.5',
-                    stroke: 'black',
-                    'fill-opacity': .5},
-                text: { text: 'Context Node', fill: 'black' },
-              },
-      /* Weitere Attribute des Knotens*/
+  var ContextNode = Node.define('tgg.node.ContextNode', {
+      markup: '<g class="scalable node contextNode"><rect/></g><text/>',
       nodeAttr: { 'type': 'contextNode' }
   });
 
-  var nacNode = new joint.shapes.basic.Rect({
-      position: { x: 270, y: 30 },
-      size: { width: 115, height: 30 },
-      attrs: {  rect: { fill: 'white', 'stroke-width': '1.5',
-                    stroke: 'red',
-                    'fill-opacity': .5},
-                text: { text: 'NAC Node', fill: 'black' },
-              },
-      /* Weitere Attribute des Knotens*/
+  var NacNode = Node.define('tgg.node.NacNode', {
+      markup: '<g class="scalable node nacNode"><rect/></g><text/>',
       nodeAttr: { 'type': 'nacNode' }
   });
 
-  var constraintNode = new joint.shapes.basic.Rect({
-      position: { x: 400, y: 30 },
-      size: { width: 115, height: 30 },
-      attrs: {  rect: { fill: 'white', 'stroke-width': '1.5',
-                    'stroke-dasharray': '2,5',
-                    stroke: 'black',
-                    'fill-opacity': .5},
-                text: { text: 'Constraint Node', fill: 'black' },
-              },
-      /* Weitere Attribute des Knotens*/
+  var ConstraintNode = Node.define('tgg.node.ConstraintNode', {
+      markup: '<g class="scalable node constraintNode"><rect/></g><text/>',
       nodeAttr: { 'type': 'constraintNode' }
   });
 
-  var corrNode = new joint.shapes.basic.Path({
-    position: { x: 0, y: 0 },
+  var produceNode = new ProduceNode({
+    position: { x: 10, y: 30 },
+    attrs: { text: {text: "Produce Node"}}
+  });
+
+  var contextNode = new ContextNode({
+      position: { x: 140, y: 30 },
+      attrs: { text: { text: 'Context Node'}}
+  });
+
+  var nacNode = new NacNode({
+      position: { x: 270, y: 30 },
+      attrs: { text: { text: 'NAC Node'}}
+  });
+
+  var constraintNode = new ConstraintNode({
+      position: { x: 400, y: 30 },
+      attrs: { text: { text: 'Constraint Node'}}
+  });
+
+  var corrNode = joint.shapes.basic.Path.define('tgg.node.CorrNode', {
     size: { width: 115, height: 50 },
     attrs: {
       path: { d: 'M 0 50 L 0 50 50 100 250 100 300 50 250 0 50 0 z',
@@ -167,12 +159,10 @@ console.log("All events", evt, x, y);
       },
     },
     /* Weitere Attribute des Knotens*/
-    nodeAttr: { 'type': 'contextNode' }
+    nodeAttr: { 'type': 'corrNode' }
   });
 
-
-
-  stencilGraph.addCells([contextNode, constraintNode, nacNode]);
+  stencilGraph.addCells([produceNode, contextNode, constraintNode, nacNode]);
 
   /* Example Graph */
   var rect2 = contextNode.clone();
@@ -301,7 +291,7 @@ var selectedCell = null;
         console.log(cellView.model);
         selectedCell = cellView;
         selectedCell.highlight();
-        if(cellView.model.get('type') == 'basic.Path' || cellView.model.get('type') == 'basic.Rect' || cellView.model.get('type') == 'tgg.ProduceNode') {
+        if( cellView.model.get('type').startsWith('tgg.node')) {
           if($(".editNode").attr('model-id') != cellView.model.get('id')) {
             $(".editNode").remove();
             $("#toolboxSection").remove();
@@ -310,7 +300,7 @@ var selectedCell = null;
             $("#paper").append("<div class='editNode' model-id='" + cellView.model.get('id') + "' style='position:absolute;margin: " + (position.y - 20) + "px 0 0 " + (position.x - 20) + "px;height:" + (size.height + 40) + "px;width:" + (size.width + 40) + "px'></div>");
             $(".editNode").append("<button class='deleteBtn'></button>")
             $(".editNode").append("<button class='resizeBtn'></button>")
-            if(cellView.model.get('type') == 'basic.Rect' || cellView.model.get('type') == 'tgg.ProduceNode') {
+            if(cellView.model.get('type').startsWith('tgg.node')) {
               $(".editNode").append("<button class='addLinkBtn'></button>")
             }
 
@@ -345,27 +335,12 @@ var selectedCell = null;
 
             $("#nodeType").change(function(){
               cellView.model.set('nodeAttr', {type : $("#nodeType").val()});
-
-              if(cellView.model.get('type') == 'basic.Rect') {
-                switch(cellView.model.get('nodeAttr').type) {
-                  case "contextNode":
-                    cellView.model.attr('rect/stroke', contextNodeColor);
-                    cellView.model.attr('rect/stroke-dasharray', '0');
-                    break;
-                  case "produceNode":
-                    cellView.model.attr('rect/stroke', produceNodeColor);
-                    cellView.model.attr('rect/stroke-dasharray', '0');
-                    break;
-                  case "nacNode":
-                    cellView.model.attr('rect/stroke', nacNodeColor);
-                    cellView.model.attr('rect/stroke-dasharray', '0');
-                    break;
-                  case "constraintNode":
-                    cellView.model.attr('rect/stroke', constraintNodeColor);
-                    cellView.model.attr('rect/stroke-dasharray', '2,5');
-                    break;
-                  }
-                }
+                var el = V(cellView.el).findOne("g");
+                el.removeClass("contextNode")
+                  .removeClass("produceNode")
+                  .removeClass("nacNode")
+                  .removeClass("constraintNode")
+                  .addClass($("#nodeType").val());
 
                 if(cellView.model.get('type') == 'basic.Path') {
                   switch(cellView.model.get('nodeAttr').type) {
@@ -454,7 +429,7 @@ var selectedCell = null;
                 /* Füge eine Correspondence hinzu */
                 $("#newCorrLink").click(function() {
 
-                  newCorrNode = corrNode.clone();
+                  newCorrNode = new corrNode();
                   newCorrNode.attr('text/text', cellView.model.get('attrs').text.text + 'TO');
                   newCorrNode.set('position', { x: cellView.model.position().x, y: cellView.model.position().y });
 
@@ -611,7 +586,9 @@ var selectedCell = null;
       });
 
       paper.on('blank:pointerdown', function(evt, x, y) {
+        selectedCell.unhighlight();
         $(".editNode").remove();
+
         $("#toolboxSection").remove();
 
       });
