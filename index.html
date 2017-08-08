@@ -101,18 +101,20 @@ console.log("All events", evt, x, y);
     var nacNodeColor = "red";
     var constraintNodeColor = "black";
 
-  var produceNode = new joint.shapes.basic.Rect({
-      position: { x: 10, y: 30 },
-      size: { width: 115, height: 30 },
-      attrs: {  rect: { fill: 'white', 'stroke-width': '1.5',
-                stroke: '#00b500' ,
-                'fill-opacity': .5
-              },
-                text: { text: 'Produce Node', fill: 'black' }
-              },
-      /* Weitere Attribute des Knotens*/
-      nodeAttr: { 'type': 'produceNode' }
+  var Node = joint.shapes.basic.Rect.define('tgg.Node', {
+    markup: '<g class="scalable node"><rect/></g><text/>',
+    size: { width: 115, height: 30 },
   });
+
+  var ProduceNode = Node.define('tgg.ProduceNode', {
+    markup: '<g class="scalable node produceNode"><rect/></g><text/>',
+    nodeAttr: { 'type': 'produceNode' }
+  });
+
+  var produceNode = (new ProduceNode({
+    position: { x: 10, y: 30 },
+    attrs: { text: {text: "Produce Node"}}})
+  ).addTo(stencilGraph);
 
   var contextNode = new joint.shapes.basic.Rect({
       position: { x: 140, y: 30 },
@@ -168,23 +170,36 @@ console.log("All events", evt, x, y);
     nodeAttr: { 'type': 'contextNode' }
   });
 
-  stencilGraph.addCells([contextNode, produceNode, constraintNode, nacNode]);
+
+
+  stencilGraph.addCells([contextNode, constraintNode, nacNode]);
 
   /* Example Graph */
   var rect2 = contextNode.clone();
-  rect2.translate(300);
+  rect2.position(100, 50);
+  rect2.attr('text/text', "?device");
   var rect3 = contextNode.clone();
-  rect3.translate(300, 250);
-  var rect4 = produceNode.clone();
-  rect3.translate(300, 0);
+  rect3.position(300, 50);
+  rect3.attr('text/text', "mso:Pump");
+  var rect4 = (new ProduceNode).attr('text/text', "?fitting").position(100, 150).addTo(graph);
+  var rect5 = (new ProduceNode).attr('text/text', "mso:Fitting").position(300, 150).addTo(graph);
 
   var link = new joint.dia.Link({
       source: { id: rect4.id },
       target: { id: rect2.id },
-      attrs: { '.connection': {
+      attrs: { '.test': 2,
+      '.connection': {
             'stroke-width': 1.5, stroke: '#00b500'}
         },
+        class: "test"
   });
+  link.label(0, {
+    position: .5,
+    attrs: {
+        rect: { fill: 'white' },
+        text: { fill: 'blue', text: 'my label' }
+    }
+});
   var link2 = new joint.dia.Link({
       source: { id: rect2.id },
       target: { id: rect3.id },
@@ -284,9 +299,9 @@ var selectedCell = null;
           selectedCell.unhighlight();
         }
         console.log(cellView.model);
-        if(cellView.model.get('type') == 'basic.Path' || cellView.model.get('type') == 'basic.Rect') {
         selectedCell = cellView;
         selectedCell.highlight();
+        if(cellView.model.get('type') == 'basic.Path' || cellView.model.get('type') == 'basic.Rect' || cellView.model.get('type') == 'tgg.ProduceNode') {
           if($(".editNode").attr('model-id') != cellView.model.get('id')) {
             $(".editNode").remove();
             $("#toolboxSection").remove();
@@ -295,7 +310,7 @@ var selectedCell = null;
             $("#paper").append("<div class='editNode' model-id='" + cellView.model.get('id') + "' style='position:absolute;margin: " + (position.y - 20) + "px 0 0 " + (position.x - 20) + "px;height:" + (size.height + 40) + "px;width:" + (size.width + 40) + "px'></div>");
             $(".editNode").append("<button class='deleteBtn'></button>")
             $(".editNode").append("<button class='resizeBtn'></button>")
-            if(cellView.model.get('type') == 'basic.Rect') {
+            if(cellView.model.get('type') == 'basic.Rect' || cellView.model.get('type') == 'tgg.ProduceNode') {
               $(".editNode").append("<button class='addLinkBtn'></button>")
             }
 

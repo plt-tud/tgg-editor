@@ -3,19 +3,21 @@ body {
     font-family: sans-serif, Arial;
 }
 
+.produceNode rect {
+  stroke-width: 1.5;
+  stroke: #00b500;
+  fill-opacity: 0.5;
+  }
+
 /*  Toolbar  */
 #toolbox {
-    background-color: #BDBDBD;
     height: 150px;
-    width: 100%;
-    box-sizing: border-box;
 }
 
 #stencilArea {
   background-color: #BDBDBD;
-  display: flex;
   height: 85px;
-  width: 100%px;
+  width: 100%;
 }
 
 #stencil {
@@ -24,9 +26,6 @@ body {
 
 #paperArea {
   height: 500px;
-  width: 100%;
-  overflow: scroll;
-  top: 5px;
 }
 
 #paper {
