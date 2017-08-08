@@ -54,8 +54,10 @@
       </div>
   </div>
 
-<script type="text/javascript">
 
+<script src="js/tggShapes.js"></script>
+
+<script type="text/javascript">
   var ConstraintElementView = joint.dia.ElementView.extend({
     events: {'mouseover': 'mouseovercard'},
     mouseovercard: function(evt, x, y) {
@@ -101,31 +103,7 @@ console.log("All events", evt, x, y);
     var nacNodeColor = "red";
     var constraintNodeColor = "black";
 
-  var Node = joint.shapes.basic.Rect.define('tgg.node.BasicNode', {
-    markup: '<g class="scalable node"><rect/></g><text/>',
-    size: { width: 115, height: 30 },
-    domain: null
-  });
 
-  var ProduceNode = Node.define('tgg.node.ProduceNode', {
-    markup: '<g class="scalable node produceNode"><rect/></g><text/>',
-    nodeType: 'produceNode'
-  });
-
-  var ContextNode = Node.define('tgg.node.ContextNode', {
-      markup: '<g class="scalable node contextNode"><rect/></g><text/>',
-      nodeType: 'contextNode'
-  });
-
-  var NacNode = Node.define('tgg.node.NacNode', {
-      markup: '<g class="scalable node nacNode"><rect/></g><text/>',
-      nodeType: 'nacNode'
-  });
-
-  var ConstraintNode = Node.define('tgg.node.ConstraintNode', {
-      markup: '<g class="scalable node constraintNode"><rect/></g><text/>',
-      nodeType: 'constraintNode'
-  });
 
   var produceNode = new ProduceNode({
     position: { x: 10, y: 30 },
