@@ -39,3 +39,12 @@ var CorrespondenceNode = joint.shapes.basic.Path.define('tgg.node.CorrNode', {
   /* Weitere Attribute des Knotens*/
   nodeType: 'corrNode'
 });
+
+var Domain = joint.shapes.basic.Rect.define('tgg.domain'{
+  markup: '<g class="scalable"><rect/></g><text/>',
+  size: { width: 500, height: 500 },
+  attrs: {
+    rect: { 'fill-opacity': 0.2, style:{'pointer-events':'none'} },
+    text: { transform: 'matrix(1,0,0,1,0,-240)' } },
+  domain: null
+});
