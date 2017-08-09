@@ -1,35 +1,32 @@
 var ConstraintElementView = joint.dia.ElementView.extend({
-  events: {'mouseover': 'mouseovercard'},
-  mouseovercard: function(evt, x, y) {
-  //  '<button class="delete">x</button>',
-  var size = this.model.get('size');
-  var position = this.model.get('position');
-  //  console.log(this.model);
-  }
-});
+  events: {
+    mouseover:  function(evt, x, y) {
+        //  '<button class="delete">x</button>',
+        var size = this.model.get('size');
+        var position = this.model.get('position');
+        //console.log("Mouse over new element", this.model);
+      }
+    }
+  });
 
 var graph = new joint.dia.Graph;
 var paper = new joint.dia.Paper({
   el: $('#paper'),
-  height: $('#paperArea').height()-15,
-  width: $('#paperArea').width()-15,
+  height: $('#paperArea').height(),
+  width: $('#paperArea').width(),
   model: graph,
   gridSize: 15,
   drawGrid: true,
   elementView: ConstraintElementView
 });
 
-/*
-paper.on('all', function(evt, x, y) {
-console.log("All events", evt, x, y);
-});
-*/
+
 // Canvas from which you take shapes
 var stencilGraph = new joint.dia.Graph;
 var stencilPaper = new joint.dia.Paper({
     el: $('#stencil'),
-    height: $('#stencilArea').height()-15,
-    width: $('#stencilArea').width()-15,
+    height: $('#stencilArea').height(),
+    width: $('#stencilArea').width(),
     model: stencilGraph,
     interactive: false,
     background: {
@@ -157,68 +154,29 @@ paper.on('cell:pointerdown', function (cellView, evt, x, y) {
     selectedCell.unhighlight();
   }
   var cell = cellView.model;
-  if (cell.get('parent')) {
-    graph.getCell(cell.get('parent')).unembed(cell);
- }
-
-  selectedCell = cellView;
-  selectedCell.highlight();
   if( cellView.model.get('type').startsWith('tgg.node')) {
-    if($(".editNode").attr('model-id') != cellView.model.get('id')) {
-      $(".editNode").remove();
-      $("#toolboxSection").remove();
-      var size = cellView.model.get('size');
-      var position = cellView.model.get('position');
-      $("#paper").append(`
-        <div class='editNode' model-id="${cellView.model.get('id')}"
-              style="position: absolute;
-                    margin: ${position.y - 20}px 0 0 ${position.x - 20}px;
-                    height: ${size.height + 40}px;
-                    width:  ${size.width + 40}px">
-          <button class='deleteBtn'></button>
-          <button class='resizeBtn'></button>
-          <button class='addLinkBtn'></button>
-        </div>
-      `);
+    selectedCell = cellView;
+    selectedCell.highlight();
 
-      var elemStr = `
-      <div id="toolboxSection" class="form-inline">
-          <div class="form-group">
-            <label>Name</label>
-            <input class="form-control" id="nodeName" value="${cellView.model.get('attrs').text.text}"/>
-          </div>
-          <div class="form-group">
-            <label>Domain:</label>
-            <select class="form-control" id="domain">
-              <option value="source">Source Model</option>
-              <option value="correspondence">Correspondence Model</option>
-              <option value="target">Target Model</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Type:</label>
-            <select class="form-control" id="nodeType">
-              <option value="produceNode">Produce Node</option>
-              <option value="contextNode">Context Node</option>
-              <option value="nacNode">NAC Node</option>
-              <option value="constraintNode">Constraint Node</option>
-            </select>
-          </div>
-      </div>`;
-      $("#toolbox").append(elemStr);
-      $('#nodeType').val(cellView.model.get('nodeType'));
-      $('#domain').val(cellView.model.get('domain'));
+    if (cell.get('parent')) {
+      graph.getCell(cell.get('parent')).unembed(cell);
+   }
+
+    if($(".editNode").attr('model-id') != cell.get('id')) {
+      $(".editNode").remove();
+      updateToolbox(cell);
+
 
       $("#nodeName").keyup(function(){
-        cellView.model.attr('text/text', $("#nodeName").val());
+        cell.attr('text/text', $("#nodeName").val());
       });
 
       $("#domain").change(function(){
-        cellView.model.set('domain', $("#domain").val());
+        cell.set('domain', $("#domain").val());
       });
 
       $("#nodeType").change(function(){
-        cellView.model.set('nodeType', $("#nodeType").val());
+        cell.set('nodeType', $("#nodeType").val());
           var el = V(cellView.el).findOne("g");
           el.removeClass("contextNode")
             .removeClass("produceNode")
@@ -226,15 +184,15 @@ paper.on('cell:pointerdown', function (cellView, evt, x, y) {
             .removeClass("constraintNode")
             .addClass($("#nodeType").val());
 
-          if(cellView.model.get('type') == 'basic.Path') {
-            switch(cellView.model.get('nodeType')) {
+          if(cell.get('type') == 'basic.Path') {
+            switch(cell.get('nodeType')) {
               case "contextNode":
-                cellView.model.attr('path/stroke', contextNodeColor);
-                cellView.model.attr('path/stroke-dasharray', '0');
+                cell.attr('path/stroke', contextNodeColor);
+                cell.attr('path/stroke-dasharray', '0');
                 break;
               case "produceNode":
-                cellView.model.attr('path/stroke', produceNodeColor);
-                cellView.model.attr('path/stroke-dasharray', '0');
+                cell.attr('path/stroke', produceNodeColor);
+                celll.attr('path/stroke-dasharray', '0');
                 break;
               }
           }
@@ -484,6 +442,7 @@ paper.on('cell:pointerup', function(cellView, evt, x, y) {
             cellViewBelow.model.embed(cell);
             cell.set("domain", cellViewBelow.model.get('domain'));
         }
+        updateToolbox(cell);
     }
 });
 
@@ -492,3 +451,48 @@ paper.on('blank:pointerdown', function(evt, x, y) {
   $(".editNode").remove();
   $("#toolboxSection").remove();
 });
+
+function updateToolbox(cell){
+  $("#toolboxSection").remove();
+  var size = cell.get('size');
+  var position = cell.get('position');
+  $("#paper").append(`
+    <div class='editNode' model-id="${cell.get('id')}"
+          style="position: absolute;
+                margin: ${position.y - 20}px 0 0 ${position.x - 20}px;
+                height: ${size.height + 40}px;
+                width:  ${size.width + 40}px">
+      <button class='deleteBtn'></button>
+      <button class='resizeBtn'></button>
+      <button class='addLinkBtn'></button>
+    </div>
+  `);
+
+  var elemStr = `
+  <div id="toolboxSection" class="form-inline">
+      <div class="form-group">
+        <label>Name</label>
+        <input class="form-control" id="nodeName" value="${cell.get('attrs').text.text}"/>
+      </div>
+      <div class="form-group">
+        <label>Domain:</label>
+        <select class="form-control" id="domain" disabled>
+          <option value="source">Source Model</option>
+          <option value="correspondence">Correspondence Model</option>
+          <option value="target">Target Model</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Type:</label>
+        <select class="form-control" id="nodeType">
+          <option value="produceNode">Produce Node</option>
+          <option value="contextNode">Context Node</option>
+          <option value="nacNode">NAC Node</option>
+          <option value="constraintNode">Constraint Node</option>
+        </select>
+      </div>
+  </div>`;
+  $("#toolbox").append(elemStr);
+  $('#nodeType').val(cell.get('nodeType'));
+  $('#domain').val(cell.get('domain'));
+}
