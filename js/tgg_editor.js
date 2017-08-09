@@ -175,16 +175,32 @@ var firstClickX = 0;
 var firstClickY = 0;
 var width = 0;
 var height = 0;
+var selectedCellView = null;
 var selectedCell = null;
+var selectedElement = null;
+
+function setPos(event) {
+  newHeight = (event.pageY - firstClickY);
+  newWidth = (event.pageX - firstClickX);
+  newHeight = (newHeight - (newHeight % 15)) / 15;
+  newHeight = height + newHeight * 15;
+
+  newWidth = (newWidth - (newWidth % 15)) / 15;
+  newWidth = width + newWidth * 15;
+
+  selectedCell.resize(newWidth, newHeight);
+  $(".editNode").height(newHeight + 40);
+  $(".editNode").width(newWidth + 40);
+  selectedCell.set('position', {
+    x: posX,
+    y: posY
+  });
+}
 
 paper.on('cell:pointerdown', function(cellView, evt, x, y) {
-  if (selectedCell) {
-    selectedCell.unhighlight();
-  }
+  selectCell(cellView);
   var cell = cellView.model;
   if (cellView.model.get('type').startsWith('tgg.node')) {
-    selectedCell = cellView;
-    selectedCell.highlight();
 
     if (cell.get('parent')) {
       graph.getCell(cell.get('parent')).unembed(cell);
@@ -192,42 +208,8 @@ paper.on('cell:pointerdown', function(cellView, evt, x, y) {
 
     if ($(".editNode").attr('model-id') != cell.get('id')) {
       $(".editNode").remove();
-      updateToolbox(cell);
-
-
-      $("#nodeName").keyup(function() {
-        cell.attr('text/text', $("#nodeName").val());
-      });
-
-      $("#domain").change(function() {
-        cell.set('domain', $("#domain").val());
-      });
-
-      $("#nodeType").change(function() {
-        cell.set('nodeType', $("#nodeType").val());
-        var el = V(cellView.el).findOne("g");
-        el.removeClass("contextNode")
-          .removeClass("produceNode")
-          .removeClass("nacNode")
-          .removeClass("constraintNode")
-          .addClass($("#nodeType").val());
-
-        if (cell.get('type') == 'basic.Path') {
-          switch (cell.get('nodeType')) {
-            case "contextNode":
-              cell.attr('path/stroke', contextNodeColor);
-              cell.attr('path/stroke-dasharray', '0');
-              break;
-            case "produceNode":
-              cell.attr('path/stroke', produceNodeColor);
-              celll.attr('path/stroke-dasharray', '0');
-              break;
-          }
-        }
-
-      });
-
-      cellView.model.on('change:position', function() {
+      showEditBox();
+      cell.on('change:position', function() {
         $(".editNode").css('margin', (cellView.model.get('position').y - 20) + 'px 0 0 ' + (cellView.model.get('position').x - 20) + 'px');
         paper.fitToContent({
           minWidth: $('#paperArea').width() - 15,
@@ -258,44 +240,15 @@ paper.on('cell:pointerdown', function(cellView, evt, x, y) {
           }
         });
 
-        function setPos(event) {
-          newHeight = (event.pageY - firstClickY);
-          newWidth = (event.pageX - firstClickX);
-          newHeight = (newHeight - (newHeight % 15)) / 15;
-          newHeight = height + newHeight * 15;
-
-          newWidth = (newWidth - (newWidth % 15)) / 15;
-          newWidth = width + newWidth * 15;
-
-          cellView.model.resize(newWidth, newHeight);
-          $(".editNode").height(newHeight + 40);
-          $(".editNode").width(newWidth + 40);
-          cellView.model.set('position', {
-            x: posX,
-            y: posY
-          });
-        }
-
         $(".addLinkBtn").click(function() {
           $(".editNode").append("<div class='btnMenu'></div>");
           $(".btnMenu").append("<ul id='btnMenuList'>");
-          console.log("Hier");
           switch (cellView.model.get('nodeType')) {
             case "contextNode":
-              $("#btnMenuList").append("<li id='newCorrLink'>Correspondence Link</li>");
-              $("#btnMenuList").append("<li id='newRelatLink'>Relation Link</li>");
-              break;
             case "produceNode":
               $("#btnMenuList").append("<li id='newCorrLink'>Correspondence Link</li>");
+            default:
               $("#btnMenuList").append("<li id='newRelatLink'>Relation Link</li>");
-              break;
-            case "nacNode":
-              $("#btnMenuList").append("<li id='newRelatLink'>Relation Link</li>");
-              console.log("Hier23");
-              break;
-            case "constraintNode":
-              $("#btnMenuList").append("<li id='newRelatLink'>Relation Link</li>");
-              console.log("Hier545");
               break;
           }
 
@@ -490,7 +443,7 @@ paper.on('cell:pointerdown', function(cellView, evt, x, y) {
 paper.on('cell:pointerup', function(cellView, evt, x, y) {
 
   var cell = cellView.model;
-  var cellViewsBelow = paper.findViewsFromPoint(cell.getBBox().center());
+  var cellViewsBelow = paper.findViewsFromPoint(cellView.getBBox().center());
 
   if (cellViewsBelow.length) {
     // Note that the findViewsFromPoint() returns the view for the `cell` itself.
@@ -503,22 +456,20 @@ paper.on('cell:pointerup', function(cellView, evt, x, y) {
       cellViewBelow.model.embed(cell);
       cell.set("domain", cellViewBelow.model.get('domain'));
     }
-    updateToolbox(cell);
+    updateToolbox(cellView);
   }
 });
 
 paper.on('blank:pointerdown', function(evt, x, y) {
-  if (selectedCell) selectedCell.unhighlight();
+  selectCell(null);
   $(".editNode").remove();
-  $("#toolboxSection").remove();
 });
 
-function updateToolbox(cell) {
-  $("#toolboxSection").remove();
-  var size = cell.get('size');
-  var position = cell.get('position');
+function showEditBox() {
+  var size = selectedCell.get('size');
+  var position = selectedCell.get('position');
   $("#paper").append(`
-    <div class='editNode' model-id="${cell.get('id')}"
+    <div class='editNode' model-id="${selectedCell.get('id')}"
           style="position: absolute;
                 margin: ${position.y - 20}px 0 0 ${position.x - 20}px;
                 height: ${size.height + 40}px;
@@ -528,32 +479,53 @@ function updateToolbox(cell) {
       <button class='addLinkBtn'></button>
     </div>
   `);
-
-  var elemStr = `
-  <div id="toolboxSection" class="form-inline">
-      <div class="form-group">
-        <label>Name</label>
-        <input class="form-control" id="nodeName" value="${cell.get('attrs').text.text}"/>
-      </div>
-      <div class="form-group">
-        <label>Domain:</label>
-        <select class="form-control" id="domain" disabled>
-          <option value="source">Source Model</option>
-          <option value="correspondence">Correspondence Model</option>
-          <option value="target">Target Model</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Type:</label>
-        <select class="form-control" id="nodeType">
-          <option value="produceNode">Produce Node</option>
-          <option value="contextNode">Context Node</option>
-          <option value="nacNode">NAC Node</option>
-          <option value="constraintNode">Constraint Node</option>
-        </select>
-      </div>
-  </div>`;
-  $("#toolbox").append(elemStr);
-  $('#nodeType').val(cell.get('nodeType'));
-  $('#domain').val(cell.get('domain'));
 }
+
+function selectCell(cellView) {
+  if (selectedCellView) {
+    selectedCellView.unhighlight();
+  }
+  console.log(cellView);
+  if (cellView) {
+    selectedCellView = cellView;
+    selectedCell = cellView.model;
+    selectedElement = V(cellView.el).findOne("g");
+    selectedCellView.highlight();
+  }
+  else {
+    selectedCellView = null;
+    selectedCell = null;
+    selectedElement = null;
+  }
+  updateToolbox();
+}
+
+function updateToolbox() {
+  if (selectedCell) {
+    $('#nodeName').val(selectedCell.get('attrs').text.text);
+    $('#nodeType').val(selectedCell.get('nodeType', "none"));
+    $('#domain').val(selectedCell.get('domain', "none"));
+  }
+  else {
+    $('#nodeName').val("");
+    $('#nodeType').val("");
+    $('#domain').val("");
+  }
+}
+
+function initToolboxBehaviour() {
+  $("#nodeName").keyup(function() {
+    selectedCell.attr('text/text', $("#nodeName").val());
+  });
+
+  $("#nodeType").change(function() {
+    selectedCell.set('nodeType', $("#nodeType").val());
+    selectedElement.removeClass("contextNode")
+      .removeClass("produceNode")
+      .removeClass("nacNode")
+      .removeClass("constraintNode")
+      .addClass($("#nodeType").val());
+  });
+}
+
+initToolboxBehaviour();
