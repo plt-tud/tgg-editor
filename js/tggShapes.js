@@ -23,3 +23,19 @@ var ConstraintNode = Node.define('tgg.node.ConstraintNode', {
     markup: '<g class="scalable node constraintNode"><rect/></g><text/>',
     nodeType: 'constraintNode'
 });
+
+var CorrespondenceNode = joint.shapes.basic.Path.define('tgg.node.CorrNode', {
+  size: { width: 115, height: 50 },
+  attrs: {
+    path: { d: 'M 0 50 L 0 50 50 100 250 100 300 50 250 0 50 0 z',
+            fill: 'white',
+            'stroke-width': '1.5',
+            stroke: '#00b500',
+            'fill-opacity': .5},
+    text: {
+      text: 'CorrNode', fill: 'black', transform: 'matrix(1,0,0,1,0,-40)'
+    },
+  },
+  /* Weitere Attribute des Knotens*/
+  nodeType: 'corrNode'
+});

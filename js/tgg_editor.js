@@ -65,22 +65,6 @@ var constraintNode = new ConstraintNode({
     attrs: { text: { text: 'Constraint Node'}}
 });
 
-var corrNode = joint.shapes.basic.Path.define('tgg.node.CorrNode', {
-  size: { width: 115, height: 50 },
-  attrs: {
-    path: { d: 'M 0 50 L 0 50 50 100 250 100 300 50 250 0 50 0 z',
-            fill: 'white',
-            'stroke-width': '1.5',
-            stroke: '#00b500',
-            'fill-opacity': .5},
-    text: {
-      text: 'CorrNode', fill: 'black', transform: 'matrix(1,0,0,1,0,-40)'
-    },
-  },
-  /* Weitere Attribute des Knotens*/
-  nodeType: 'corrNode'
-});
-
 stencilGraph.addCells([produceNode, contextNode, constraintNode, nacNode]);
 
 /* Event Handling */
@@ -329,7 +313,7 @@ paper.on('cell:pointerdown', function (cellView, evt, x, y) {
           /* Füge eine Correspondence hinzu */
           $("#newCorrLink").click(function() {
 
-            newCorrNode = new corrNode();
+            newCorrNode = new CorrespondenceNode();
             newCorrNode.attr('text/text', cellView.model.get('attrs').text.text + 'TO');
             newCorrNode.set('position', { x: cellView.model.position().x, y: cellView.model.position().y });
 
