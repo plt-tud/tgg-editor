@@ -1,15 +1,15 @@
 var ConstraintElementView = joint.dia.ElementView.extend({
   events: {
-    mouseover:  function(evt, x, y) {
-        //  '<button class="delete">x</button>',
-        var size = this.model.get('size');
-        var position = this.model.get('position');
-        //console.log("Mouse over new element", this.model);
-      }
+    mouseover: function(evt, x, y) {
+      //  '<button class="delete">x</button>',
+      var size = this.model.get('size');
+      var position = this.model.get('position');
+      //console.log("Mouse over new element", this.model);
     }
-  });
+  }
+});
 
-var graph = new joint.dia.Graph;
+var graph = new joint.dia.Graph();
 var paper = new joint.dia.Paper({
   el: $('#paper'),
   height: $('#paperArea').height(),
@@ -22,18 +22,18 @@ var paper = new joint.dia.Paper({
 
 
 // Canvas from which you take shapes
-var stencilGraph = new joint.dia.Graph;
+var stencilGraph = new joint.dia.Graph();
 var stencilPaper = new joint.dia.Paper({
-    el: $('#stencil'),
-    height: $('#stencilArea').height(),
-    width: $('#stencilArea').width(),
-    model: stencilGraph,
-    interactive: false,
-    background: {
-      color: '#BDBDBD',
-    },
-    restrictTranslate: true
-  });
+  el: $('#stencil'),
+  height: $('#stencilArea').height(),
+  width: $('#stencilArea').width(),
+  model: stencilGraph,
+  interactive: false,
+  background: {
+    color: '#BDBDBD',
+  },
+  restrictTranslate: true
+});
 
 var produceNodeColor = "#00b500";
 var contextNodeColor = "black";
@@ -43,23 +43,51 @@ var constraintNodeColor = "black";
 
 
 var produceNode = new ProduceNode({
-  position: { x: 10, y: 30 },
-  attrs: { text: {text: "Produce Node"}}
+  position: {
+    x: 10,
+    y: 30
+  },
+  attrs: {
+    text: {
+      text: "Produce Node"
+    }
+  }
 });
 
 var contextNode = new ContextNode({
-    position: { x: 140, y: 30 },
-    attrs: { text: { text: 'Context Node'}}
+  position: {
+    x: 140,
+    y: 30
+  },
+  attrs: {
+    text: {
+      text: 'Context Node'
+    }
+  }
 });
 
 var nacNode = new NacNode({
-    position: { x: 270, y: 30 },
-    attrs: { text: { text: 'NAC Node'}}
+  position: {
+    x: 270,
+    y: 30
+  },
+  attrs: {
+    text: {
+      text: 'NAC Node'
+    }
+  }
 });
 
 var constraintNode = new ConstraintNode({
-    position: { x: 400, y: 30 },
-    attrs: { text: { text: 'Constraint Node'}}
+  position: {
+    x: 400,
+    y: 30
+  },
+  attrs: {
+    text: {
+      text: 'Constraint Node'
+    }
+  }
 });
 
 stencilGraph.addCells([produceNode, contextNode, constraintNode, nacNode]);
@@ -149,72 +177,72 @@ var width = 0;
 var height = 0;
 var selectedCell = null;
 
-paper.on('cell:pointerdown', function (cellView, evt, x, y) {
+paper.on('cell:pointerdown', function(cellView, evt, x, y) {
   if (selectedCell) {
     selectedCell.unhighlight();
   }
   var cell = cellView.model;
-  if( cellView.model.get('type').startsWith('tgg.node')) {
+  if (cellView.model.get('type').startsWith('tgg.node')) {
     selectedCell = cellView;
     selectedCell.highlight();
 
     if (cell.get('parent')) {
       graph.getCell(cell.get('parent')).unembed(cell);
-   }
+    }
 
-    if($(".editNode").attr('model-id') != cell.get('id')) {
+    if ($(".editNode").attr('model-id') != cell.get('id')) {
       $(".editNode").remove();
       updateToolbox(cell);
 
 
-      $("#nodeName").keyup(function(){
+      $("#nodeName").keyup(function() {
         cell.attr('text/text', $("#nodeName").val());
       });
 
-      $("#domain").change(function(){
+      $("#domain").change(function() {
         cell.set('domain', $("#domain").val());
       });
 
-      $("#nodeType").change(function(){
+      $("#nodeType").change(function() {
         cell.set('nodeType', $("#nodeType").val());
-          var el = V(cellView.el).findOne("g");
-          el.removeClass("contextNode")
-            .removeClass("produceNode")
-            .removeClass("nacNode")
-            .removeClass("constraintNode")
-            .addClass($("#nodeType").val());
+        var el = V(cellView.el).findOne("g");
+        el.removeClass("contextNode")
+          .removeClass("produceNode")
+          .removeClass("nacNode")
+          .removeClass("constraintNode")
+          .addClass($("#nodeType").val());
 
-          if(cell.get('type') == 'basic.Path') {
-            switch(cell.get('nodeType')) {
-              case "contextNode":
-                cell.attr('path/stroke', contextNodeColor);
-                cell.attr('path/stroke-dasharray', '0');
-                break;
-              case "produceNode":
-                cell.attr('path/stroke', produceNodeColor);
-                celll.attr('path/stroke-dasharray', '0');
-                break;
-              }
+        if (cell.get('type') == 'basic.Path') {
+          switch (cell.get('nodeType')) {
+            case "contextNode":
+              cell.attr('path/stroke', contextNodeColor);
+              cell.attr('path/stroke-dasharray', '0');
+              break;
+            case "produceNode":
+              cell.attr('path/stroke', produceNodeColor);
+              celll.attr('path/stroke-dasharray', '0');
+              break;
           }
+        }
 
       });
 
       cellView.model.on('change:position', function() {
         $(".editNode").css('margin', (cellView.model.get('position').y - 20) + 'px 0 0 ' + (cellView.model.get('position').x - 20) + 'px');
         paper.fitToContent({
-            minWidth: $('#paperArea').width()-15,
-              minHeight: $('#paperArea').height()-15
+          minWidth: $('#paperArea').width() - 15,
+          minHeight: $('#paperArea').height() - 15
         });
       });
 
-      $(document).ready(function(){
+      $(document).ready(function() {
         $(".deleteBtn").click(function() {
           cellView.remove();
           $(".editNode").remove();
         });
 
         $(".resizeBtn").on('mousedown', function(event) {
-          if(event.type == 'mousedown') {
+          if (event.type == 'mousedown') {
             firstClickX = event.pageX;
             firstClickY = event.pageY;
             posX = cellView.model.position().x;
@@ -233,23 +261,26 @@ paper.on('cell:pointerdown', function (cellView, evt, x, y) {
         function setPos(event) {
           newHeight = (event.pageY - firstClickY);
           newWidth = (event.pageX - firstClickX);
-          newHeight = (newHeight - (newHeight % 15)) /15;
-          newHeight = height + newHeight*15;
+          newHeight = (newHeight - (newHeight % 15)) / 15;
+          newHeight = height + newHeight * 15;
 
-          newWidth = (newWidth - (newWidth % 15)) /15;
-          newWidth = width + newWidth*15;
+          newWidth = (newWidth - (newWidth % 15)) / 15;
+          newWidth = width + newWidth * 15;
 
           cellView.model.resize(newWidth, newHeight);
           $(".editNode").height(newHeight + 40);
           $(".editNode").width(newWidth + 40);
-          cellView.model.set('position', { x: posX, y: posY });
+          cellView.model.set('position', {
+            x: posX,
+            y: posY
+          });
         }
 
         $(".addLinkBtn").click(function() {
           $(".editNode").append("<div class='btnMenu'></div>");
           $(".btnMenu").append("<ul id='btnMenuList'>");
           console.log("Hier");
-          switch(cellView.model.get('nodeType')) {
+          switch (cellView.model.get('nodeType')) {
             case "contextNode":
               $("#btnMenuList").append("<li id='newCorrLink'>Correspondence Link</li>");
               $("#btnMenuList").append("<li id='newRelatLink'>Relation Link</li>");
@@ -273,11 +304,14 @@ paper.on('cell:pointerdown', function (cellView, evt, x, y) {
 
             newCorrNode = new CorrespondenceNode();
             newCorrNode.attr('text/text', cellView.model.get('attrs').text.text + 'TO');
-            newCorrNode.set('position', { x: cellView.model.position().x, y: cellView.model.position().y });
+            newCorrNode.set('position', {
+              x: cellView.model.position().x,
+              y: cellView.model.position().y
+            });
 
             // Von welchem Typ ist der Anfangsknoten?
             var color = 0;
-            switch(cellView.model.get('nodeType')) {
+            switch (cellView.model.get('nodeType')) {
               case "contextNode":
                 newCorrNode.set('nodeType', "contextNode");
                 newCorrNode.attr('path/stroke', contextNodeColor);
@@ -288,13 +322,20 @@ paper.on('cell:pointerdown', function (cellView, evt, x, y) {
                 newCorrNode.attr('path/stroke', produceNodeColor);
                 color = produceNodeColor;
                 break;
-              }
+            }
 
             var link = new joint.dia.Link({
-              source: { id: cellView.model.get('id') },
-              target: { id: newCorrNode.id },
-              attrs: {'.connection': {
-                      'stroke-width': 1.5, stroke: color}
+              source: {
+                id: cellView.model.get('id')
+              },
+              target: {
+                id: newCorrNode.id
+              },
+              attrs: {
+                '.connection': {
+                  'stroke-width': 1.5,
+                  stroke: color
+                }
               },
             });
 
@@ -302,11 +343,19 @@ paper.on('cell:pointerdown', function (cellView, evt, x, y) {
 
             var linkView = paper.getDefaultLink()
               .set({
-                'source': { id : newCorrNode.id },
-                'target': { x: x, y: y },
-                'attrs': { '.connection': {
-                            'stroke-width': 1.5, stroke: color}
-                          },
+                'source': {
+                  id: newCorrNode.id
+                },
+                'target': {
+                  x: x,
+                  y: y
+                },
+                'attrs': {
+                  '.connection': {
+                    'stroke-width': 1.5,
+                    stroke: color
+                  }
+                },
               })
               .addTo(paper.model)
               .findView(paper);
@@ -327,11 +376,14 @@ paper.on('cell:pointerdown', function (cellView, evt, x, y) {
             function onDrag(evt) {
               // transform client to paper coordinates
               var p = evt.data.paper.snapToGrid({
-                  x: evt.clientX,
-                  y: evt.clientY
+                x: evt.clientX,
+                y: evt.clientY
               });
 
-              newCorrNode.set('position', { x: p.x/2 +(cellView.model.position().x/2-25), y: p.y/2 + (cellView.model.position().y/2) });
+              newCorrNode.set('position', {
+                x: p.x / 2 + (cellView.model.position().x / 2 - 25),
+                y: p.y / 2 + (cellView.model.position().y / 2)
+              });
 
               // manually execute the linkView mousemove handler
               evt.data.view.pointermove(evt, p.x, p.y);
@@ -343,7 +395,7 @@ paper.on('cell:pointerdown', function (cellView, evt, x, y) {
               $(document).off('.example');
               var targetElem;
               graph.getElements().forEach(function(element) {
-                if(element.id == evt.data.view.model.get('target').id) {
+                if (element.id == evt.data.view.model.get('target').id) {
                   targetElem = element;
                 }
               });
@@ -358,7 +410,7 @@ paper.on('cell:pointerdown', function (cellView, evt, x, y) {
             // Von welchem Typ ist der Anfangsknoten?
             var color = 0;
             var strokeDasharray = 0;
-            switch(cellView.model.get('nodeType')) {
+            switch (cellView.model.get('nodeType')) {
               case "contextNode":
                 color = contextNodeColor;
                 break;
@@ -370,20 +422,27 @@ paper.on('cell:pointerdown', function (cellView, evt, x, y) {
                 break;
               case "constraintNode":
                 color = constraintNodeColor;
-                strokeDasharray = 2,5;
+                strokeDasharray = 2, 5;
                 break;
-              }
+            }
 
 
             var linkView = paper.getDefaultLink()
               .set({
-                'source': { id : cellView.model.get('id') },
-                'target': { x: x, y: y },
-                'attrs': { '.connection': {
-                            'stroke-width': 1.5,
-                            stroke: color,
-                            'stroke-dasharray': strokeDasharray}
-                          },
+                'source': {
+                  id: cellView.model.get('id')
+                },
+                'target': {
+                  x: x,
+                  y: y
+                },
+                'attrs': {
+                  '.connection': {
+                    'stroke-width': 1.5,
+                    stroke: color,
+                    'stroke-dasharray': strokeDasharray
+                  }
+                },
               })
               .addTo(paper.model)
               .findView(paper);
@@ -404,11 +463,11 @@ paper.on('cell:pointerdown', function (cellView, evt, x, y) {
             function onDrag(evt) {
               // transform client to paper coordinates
               var p = evt.data.paper.snapToGrid({
-                  x: evt.clientX,
-                  y: evt.clientY
+                x: evt.clientX,
+                y: evt.clientY
               });
 
-            //corrNode.set('position', { x: p.x/2 +(cellView.model.position().x/2-25), y: p.y/2 + (cellView.model.position().y/2) });
+              //corrNode.set('position', { x: p.x/2 +(cellView.model.position().x/2-25), y: p.y/2 + (cellView.model.position().y/2) });
 
               // manually execute the linkView mousemove handler
               evt.data.view.pointermove(evt, p.x, p.y);
@@ -430,20 +489,22 @@ paper.on('cell:pointerdown', function (cellView, evt, x, y) {
 // See for nested graphs: http://resources.jointjs.com/tutorial/hierarchy
 paper.on('cell:pointerup', function(cellView, evt, x, y) {
 
-    var cell = cellView.model;
-    var cellViewsBelow = paper.findViewsFromPoint(cell.getBBox().center());
+  var cell = cellView.model;
+  var cellViewsBelow = paper.findViewsFromPoint(cell.getBBox().center());
 
-    if (cellViewsBelow.length) {
-        // Note that the findViewsFromPoint() returns the view for the `cell` itself.
-        var cellViewBelow = _.find(cellViewsBelow, function(c) { return c.model.id !== cell.id });
+  if (cellViewsBelow.length) {
+    // Note that the findViewsFromPoint() returns the view for the `cell` itself.
+    var cellViewBelow = _.find(cellViewsBelow, function(c) {
+      return c.model.id !== cell.id
+    });
 
-        // Prevent recursive embedding.
-        if (cellViewBelow && cellViewBelow.model.get('parent') !== cell.id) {
-            cellViewBelow.model.embed(cell);
-            cell.set("domain", cellViewBelow.model.get('domain'));
-        }
-        updateToolbox(cell);
+    // Prevent recursive embedding.
+    if (cellViewBelow && cellViewBelow.model.get('parent') !== cell.id) {
+      cellViewBelow.model.embed(cell);
+      cell.set("domain", cellViewBelow.model.get('domain'));
     }
+    updateToolbox(cell);
+  }
 });
 
 paper.on('blank:pointerdown', function(evt, x, y) {
@@ -452,7 +513,7 @@ paper.on('blank:pointerdown', function(evt, x, y) {
   $("#toolboxSection").remove();
 });
 
-function updateToolbox(cell){
+function updateToolbox(cell) {
   $("#toolboxSection").remove();
   var size = cell.get('size');
   var position = cell.get('position');
