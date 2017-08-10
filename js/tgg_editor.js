@@ -35,12 +35,6 @@ var stencilPaper = new joint.dia.Paper({
   restrictTranslate: true
 });
 
-var produceNodeColor = "#00b500";
-var contextNodeColor = "black";
-var nacNodeColor = "red";
-var constraintNodeColor = "black";
-
-
 
 var produceNode = new ProduceNode({
   position: {
@@ -261,7 +255,8 @@ paper.on('cell:pointerdown', function(cellView, evt, x, y) {
                 '.scalable': {
                   class: `scalable node ${nodeType}`
                 }
-              }
+              },
+              nodeType: nodeType
             });
             newCorrNode.attr('text/text', cellView.model.get('attrs').text.text + 'TO');
             newCorrNode.set('position', {
