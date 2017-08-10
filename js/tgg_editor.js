@@ -177,7 +177,6 @@ var width = 0;
 var height = 0;
 var selectedCellView = null;
 var selectedCell = null;
-var selectedElement = null;
 
 function setPos(event) {
   newHeight = (event.pageY - firstClickY);
@@ -254,48 +253,40 @@ paper.on('cell:pointerdown', function(cellView, evt, x, y) {
 
           /* Füge eine Correspondence hinzu */
           $("#newCorrLink").click(function() {
+            // Von welchem Typ ist der Anfangsknoten?
+            var nodeType = cell.get('nodeType');
 
-            newCorrNode = new CorrespondenceNode();
+            newCorrNode = new CorrespondenceNode({
+              attrs: {
+                '.scalable': {
+                  class: `scalable node ${nodeType}`
+                }
+              }
+            });
             newCorrNode.attr('text/text', cellView.model.get('attrs').text.text + 'TO');
             newCorrNode.set('position', {
               x: cellView.model.position().x,
               y: cellView.model.position().y
             });
 
-            // Von welchem Typ ist der Anfangsknoten?
-            var color = 0;
-            switch (cellView.model.get('nodeType')) {
-              case "contextNode":
-                newCorrNode.set('nodeType', "contextNode");
-                newCorrNode.attr('path/stroke', contextNodeColor);
-                color = contextNodeColor;
-                break;
-              case "produceNode":
-                newCorrNode.set('nodeType', "produceNode");
-                newCorrNode.attr('path/stroke', produceNodeColor);
-                color = produceNodeColor;
-                break;
-            }
 
-            var link = new joint.dia.Link({
+            var link = new Connection({
               source: {
-                id: cellView.model.get('id')
+                id: newCorrNode.id
               },
               target: {
-                id: newCorrNode.id
+                id: cellView.model.get('id')
               },
               attrs: {
                 '.connection': {
-                  'stroke-width': 1.5,
-                  stroke: color
+                  class: `connection ${nodeType}`
                 }
               },
             });
 
             graph.addCells([newCorrNode, link]);
 
-            var linkView = paper.getDefaultLink()
-              .set({
+            var linkView = new Connection({
                 'source': {
                   id: newCorrNode.id
                 },
@@ -305,8 +296,7 @@ paper.on('cell:pointerdown', function(cellView, evt, x, y) {
                 },
                 'attrs': {
                   '.connection': {
-                    'stroke-width': 1.5,
-                    stroke: color
+                      class: `connection ${nodeType}`
                   }
                 },
               })
@@ -361,27 +351,8 @@ paper.on('cell:pointerdown', function(cellView, evt, x, y) {
           $("#newRelatLink").click(function() {
 
             // Von welchem Typ ist der Anfangsknoten?
-            var color = 0;
-            var strokeDasharray = 0;
-            switch (cellView.model.get('nodeType')) {
-              case "contextNode":
-                color = contextNodeColor;
-                break;
-              case "produceNode":
-                color = produceNodeColor;
-                break;
-              case "nacNode":
-                color = nacNodeColor;
-                break;
-              case "constraintNode":
-                color = constraintNodeColor;
-                strokeDasharray = 2, 5;
-                break;
-            }
-
-
-            var linkView = paper.getDefaultLink()
-              .set({
+            var nodeType = cell.get('nodeType');
+            var linkView = new Connection({
                 'source': {
                   id: cellView.model.get('id')
                 },
@@ -391,9 +362,7 @@ paper.on('cell:pointerdown', function(cellView, evt, x, y) {
                 },
                 'attrs': {
                   '.connection': {
-                    'stroke-width': 1.5,
-                    stroke: color,
-                    'stroke-dasharray': strokeDasharray
+                      class: `connection ${nodeType}`
                   }
                 },
               })
@@ -489,13 +458,11 @@ function selectCell(cellView) {
   if (cellView) {
     selectedCellView = cellView;
     selectedCell = cellView.model;
-    selectedElement = V(cellView.el).findOne("g");
     selectedCellView.highlight();
   }
   else {
     selectedCellView = null;
     selectedCell = null;
-    selectedElement = null;
   }
   updateToolbox();
 }
@@ -519,12 +486,9 @@ function initToolboxBehaviour() {
   });
 
   $("#nodeType").change(function() {
-    selectedCell.set('nodeType', $("#nodeType").val());
-    selectedElement.removeClass("contextNode")
-      .removeClass("produceNode")
-      .removeClass("nacNode")
-      .removeClass("constraintNode")
-      .addClass($("#nodeType").val());
+    var newClass = $("#nodeType").val();
+    selectedCell.set('nodeType', newClass);
+    selectedCell.attr('.node', {class: `scalable node ${newClass}`});
   });
 }
 

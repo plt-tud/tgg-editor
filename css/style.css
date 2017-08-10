@@ -3,24 +3,24 @@ body {
   font-family: sans-serif, Arial;
 }
 
-.node rect {
+.node {
   stroke-width: 1.5;
   fill-opacity: 0.5;
 }
 
-.produceNode rect {
+.produceNode {
   stroke: #00b500;
 }
 
-.contextNode rect {
+.contextNode {
   stroke: black;
 }
 
-.nacNode rect {
+.nacNode {
   stroke: red;
 }
 
-.constraintNode rect {
+.constraintNode {
   stroke: black;
   stroke-dasharray: 2, 5;
 }

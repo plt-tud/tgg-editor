@@ -4,6 +4,12 @@ var Node = joint.shapes.basic.Rect.define('tgg.node.BasicNode', {
     width: 115,
     height: 30
   },
+  attrs: {
+    rect : {
+      stroke: null,
+      fill: null
+    }
+  },
   domain: null
 });
 
@@ -37,7 +43,7 @@ var CorrespondenceNode = joint.shapes.basic.Path.define('tgg.node.CorrNode', {
       d: 'M 0 50 L 0 50 50 100 250 100 300 50 250 0 50 0 z',
       fill: 'white',
       'stroke-width': '1.5',
-      stroke: '#00b500',
+      'stroke':  null,
       'fill-opacity': .5
     },
     text: {
@@ -69,3 +75,28 @@ var Domain = joint.shapes.basic.Rect.define('tgg.domain', {
   },
   domain: null
 });
+
+var Connection = joint.dia.Link.define('tgg.Connection', {
+  attrs: {
+     '.marker-target': { d: 'M 10 0 L 0 5 L 10 10 z'}
+  }
+}, {
+  // Prototype methods
+
+  label2: function(label) {
+    console.log("sf", this)
+    return this.label(0, {
+      position: .5,
+      attrs: {
+          text: { text: label},
+          rect: { 'fill-opacity': 0}
+      }
+    });
+  }
+}, {
+  // Static methods
+  getRandomColor: function() {
+    return '#' + Math.floor(Math.random() * 16777215).toString(16);
+  }
+}
+);
