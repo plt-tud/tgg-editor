@@ -1,0 +1,33 @@
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Node Attributes</div>
+  </div>
+  <div class="card-body" id="toolbox">
+    <div id="toolboxSection" class="form-inline" *ngIf="selectedCell">
+      <label class="mr-sm-2" for="nodeName">Name:</label>
+      <input class="form-control mb-2 mr-sm-2 mb-sm-0" id="nodeName" [ngModel]="selectedCell.get('attrs').text.text"
+             (ngModelChange)="updateName($event)"/>
+
+      <label class="mr-sm-2" for="domain">Domain:</label>
+      <select class="form-control mb-2 mr-sm-2 mb-sm-0" id="domain" [ngModel]="selectedCell.get('domain')" disabled>
+        <option value="source">Source Model</option>
+        <option value="correspondence">Correspondence Model</option>
+        <option value="target">Target Model</option>
+      </select>
+
+      <label class="mr-sm-2" for="nodeType">Type:</label>
+      <select class="form-control mb-2 mr-sm-2 mb-sm-0" id="nodeType" [ngModel]="selectedCell.get('nodeType')"
+              (ngModelChange)="updateType($event)">
+        <option value="produceNode">Produce Node</option>
+        <option value="contextNode">Context Node</option>
+        <option value="nacNode">NAC Node</option>
+        <option value="constraintNode">Constraint Node</option>
+      </select>
+    </div>
+    <div *ngIf="!selectedCell">
+      Select a node first!
+    </div>
+  </div>
+</div>
+
+

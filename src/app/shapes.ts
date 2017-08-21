@@ -4,7 +4,7 @@
 
 const joint = require('../../node_modules/jointjs/dist/joint');
 
-export const Node = joint.shapes.basic.Rect.define('tgg.node.BasicNode', {
+export let Node = joint.shapes.basic.Rect.define('tgg.node.BasicNode', {
   markup: '<g class="scalable node"><rect/></g><text/>',
   size: {
     width: 115,
@@ -19,7 +19,7 @@ export const Node = joint.shapes.basic.Rect.define('tgg.node.BasicNode', {
   domain: null
 });
 
-export const ProduceNode = Node.define('tgg.node.ProduceNode', {
+export let ProduceNode = Node.define('tgg.node.ProduceNode', {
   markup: '<g class="scalable node produceNode"><rect/></g><text/>',
   nodeType: 'produceNode'
 });
@@ -90,7 +90,6 @@ export const Connection = joint.dia.Link.define('tgg.Connection', {
     // Prototype methods
 
     label2: function (label) {
-      console.log("sf", this)
       return this.label(0, {
         position: .5,
         attrs: {

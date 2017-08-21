@@ -1,20 +1,20 @@
 import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 
-import {StencilAreaComponent} from "./stencil-area.component";
+import {SettingsComponent} from "./settings.component";
 
-describe('StencilAreaComponent', () => {
-  let component: StencilAreaComponent;
-  let fixture: ComponentFixture<StencilAreaComponent>;
+describe('SettingsComponent', () => {
+  let component: SettingsComponent;
+  let fixture: ComponentFixture<SettingsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [StencilAreaComponent]
+      declarations: [SettingsComponent]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(StencilAreaComponent);
+    fixture = TestBed.createComponent(SettingsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

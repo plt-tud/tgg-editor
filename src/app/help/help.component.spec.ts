@@ -1,20 +1,20 @@
 import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 
-import {RuleEditorComponent} from "./rule-editor.component";
+import {HelpComponent} from "./help.component";
 
-describe('RuleEditorComponent', () => {
-  let component: RuleEditorComponent;
-  let fixture: ComponentFixture<RuleEditorComponent>;
+describe('HelpComponent', () => {
+  let component: HelpComponent;
+  let fixture: ComponentFixture<HelpComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [RuleEditorComponent]
+      declarations: [HelpComponent]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RuleEditorComponent);
+    fixture = TestBed.createComponent(HelpComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
