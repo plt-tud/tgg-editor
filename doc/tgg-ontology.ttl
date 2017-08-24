@@ -8,8 +8,6 @@
 @base <http://eatld.et.tu-dresden.de/tgg> .
 
 <http://eatld.et.tu-dresden.de/tgg> rdf:type owl:Ontology ;
-                                     owl:versionIRI <http://eatld.et.tu-dresden.de/tgg/1.0.0> ;
-                                     owl:versionInfo "1.0.0" ;
                                      rdfs:comment "Ontology describing rules, domains and rulesets for Triple Graph Grammars (TGG)" ;
                                      rdfs:label "TGG Ontology" .
 
@@ -20,13 +18,22 @@
 ###  http://eatld.et.tu-dresden.de/tgg#hasDatasource
 tgg:hasDatasource rdf:type owl:ObjectProperty ;
                   rdfs:domain tgg:Domain ;
-                  rdfs:range tgg:DataSet .
+                  rdfs:range tgg:DataSource .
 
 
 ###  http://eatld.et.tu-dresden.de/tgg#hasDomain
 tgg:hasDomain rdf:type owl:ObjectProperty ;
               rdfs:domain tgg:RuleStore ;
               rdfs:range tgg:Domain .
+
+
+###  http://eatld.et.tu-dresden.de/tgg#hasPrefix
+tgg:hasPrefix rdf:type owl:ObjectProperty ;
+              rdfs:subPropertyOf owl:topObjectProperty ;
+              rdf:type owl:FunctionalProperty ;
+              rdfs:domain tgg:Domain ,
+                          tgg:RuleStore ;
+              rdfs:range tgg:Prefix .
 
 
 ###  http://eatld.et.tu-dresden.de/tgg#hasRule
@@ -44,15 +51,17 @@ tgg:hasRuleset rdf:type owl:ObjectProperty ,
 
 
 ###  http://eatld.et.tu-dresden.de/tgg#hasSourceDomain
-tgg:hasSourceDomain rdf:type owl:ObjectProperty ,
-                             owl:FunctionalProperty ;
+tgg:hasSourceDomain rdf:type owl:ObjectProperty ;
+                    rdfs:subPropertyOf owl:topObjectProperty ;
+                    rdf:type owl:FunctionalProperty ;
                     rdfs:domain tgg:RuleSet ;
                     rdfs:range tgg:Domain .
 
 
 ###  http://eatld.et.tu-dresden.de/tgg#hasTargetDomain
-tgg:hasTargetDomain rdf:type owl:ObjectProperty ,
-                             owl:FunctionalProperty ;
+tgg:hasTargetDomain rdf:type owl:ObjectProperty ;
+                    rdfs:subPropertyOf owl:topObjectProperty ;
+                    rdf:type owl:FunctionalProperty ;
                     rdfs:domain tgg:RuleSet ;
                     rdfs:range tgg:Domain .
 
@@ -64,57 +73,62 @@ tgg:hasTargetDomain rdf:type owl:ObjectProperty ,
 ###  http://eatld.et.tu-dresden.de/tgg#author
 tgg:author rdf:type owl:DatatypeProperty ,
                     owl:FunctionalProperty ;
+           rdfs:domain tgg:Rule ,
+                       tgg:RuleSet ;
            rdfs:range xsd:string .
 
 
 ###  http://eatld.et.tu-dresden.de/tgg#created_at
 tgg:created_at rdf:type owl:DatatypeProperty ,
                         owl:FunctionalProperty ;
+               rdfs:domain tgg:RuleSet ;
                rdfs:range xsd:dateTimeStamp .
 
 
 ###  http://eatld.et.tu-dresden.de/tgg#description
 tgg:description rdf:type owl:DatatypeProperty ,
                          owl:FunctionalProperty ;
-                rdfs:domain tgg:Domain ,
-                            tgg:Rule ,
+                rdfs:domain tgg:Rule ,
                             tgg:RuleSet ;
                 rdfs:range xsd:string .
 
 
 ###  http://eatld.et.tu-dresden.de/tgg#endpoint
 tgg:endpoint rdf:type owl:DatatypeProperty ;
-             rdfs:domain tgg:DataSet ;
+             rdfs:domain tgg:DataSource ;
              rdfs:range xsd:anyURI .
 
 
 ###  http://eatld.et.tu-dresden.de/tgg#name
-tgg:name rdf:type owl:DatatypeProperty ,
-                  owl:FunctionalProperty ;
-         rdfs:domain tgg:DataSet ,
-                     tgg:Domain ,
+tgg:name rdf:type owl:DatatypeProperty ;
+         rdfs:subPropertyOf owl:topDataProperty ;
+         rdf:type owl:FunctionalProperty ;
+         rdfs:domain tgg:Domain ,
+                     tgg:Prefix ,
                      tgg:Rule ,
                      tgg:RuleSet ;
          rdfs:range xsd:string .
 
 
 ###  http://eatld.et.tu-dresden.de/tgg#namedGraph
-tgg:namedGraph rdf:type owl:DatatypeProperty ,
-                        owl:FunctionalProperty ;
-               rdfs:domain tgg:DataSet ;
+tgg:namedGraph rdf:type owl:DatatypeProperty ;
+               rdfs:subPropertyOf owl:topDataProperty ;
+               rdf:type owl:FunctionalProperty ;
+               rdfs:domain tgg:DataSource ;
                rdfs:range xsd:anyURI .
 
 
-###  http://eatld.et.tu-dresden.de/tgg#prefix
-tgg:prefix rdf:type owl:DatatypeProperty ;
-           rdfs:domain tgg:Domain ,
-                       tgg:RuleStore ;
-           rdfs:range xsd:string .
+###  http://eatld.et.tu-dresden.de/tgg#namespace
+tgg:namespace rdf:type owl:DatatypeProperty ,
+                       owl:FunctionalProperty ;
+              rdfs:domain tgg:Prefix ;
+              rdfs:range xsd:anyURI .
 
 
 ###  http://eatld.et.tu-dresden.de/tgg#version
 tgg:version rdf:type owl:DatatypeProperty ,
                      owl:FunctionalProperty ;
+            rdfs:domain tgg:RuleSet ;
             rdfs:range xsd:string .
 
 
@@ -122,34 +136,28 @@ tgg:version rdf:type owl:DatatypeProperty ,
 #    Classes
 #################################################################
 
-###  http://eatld.et.tu-dresden.de/tgg#DataSet
-tgg:DataSet rdf:type owl:Class ;
-            rdfs:comment "A data source contains information how to access a triplestore to gather further information about this data set" ;
-            rdfs:label "data set" .
+###  http://eatld.et.tu-dresden.de/tgg#DataSource
+tgg:DataSource rdf:type owl:Class .
 
 
 ###  http://eatld.et.tu-dresden.de/tgg#Domain
-tgg:Domain rdf:type owl:Class ;
-           rdfs:comment "One or multiple domains can be used in TGG for the source or the target side of a transformation. A domain has a name and can have multiple data set containing ontologies used in this domain." ;
-           rdfs:label "domain" .
+tgg:Domain rdf:type owl:Class .
+
+
+###  http://eatld.et.tu-dresden.de/tgg#Prefix
+tgg:Prefix rdf:type owl:Class .
 
 
 ###  http://eatld.et.tu-dresden.de/tgg#Rule
-tgg:Rule rdf:type owl:Class ;
-         rdfs:comment "A rule defines one TGG rule following the structure of the TGG SPARQL transformation engine." ;
-         rdfs:label "rule" .
+tgg:Rule rdf:type owl:Class .
 
 
 ###  http://eatld.et.tu-dresden.de/tgg#RuleSet
-tgg:RuleSet rdf:type owl:Class ;
-            rdfs:comment "A rule set contains all rules for the bidirectional transformation between two domains. These domains are referenced by 'tgg:hasSourceDomain' and 'tgg:hasTargetDomain'." ;
-            rdfs:label "rule set" .
+tgg:RuleSet rdf:type owl:Class .
 
 
 ###  http://eatld.et.tu-dresden.de/tgg#RuleStore
-tgg:RuleStore rdf:type owl:Class ;
-              rdfs:comment "The rule store is the entry point for the TGG Rule Editor and the TGG SPARQL engine. It can hold multiple rulesets and domains." ;
-              rdfs:label "rule store" .
+tgg:RuleStore rdf:type owl:Class .
 
 
 ###  Generated by the OWL API (version 4.2.8.20170104-2310) https://github.com/owlcs/owlapi
