@@ -5,16 +5,18 @@
   <meta charset="UTF-8">
   <title>TGG-Editor</title>
 
-  <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.min.css" />
-  <link rel="stylesheet" type="text/css" href="node_modules/jointjs/dist/joint.min.css" />
-  <link rel="stylesheet" type="text/css" href="css/style.css" />
+  <link rel="stylesheet" type="text/css" href="/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="/jointjs/dist/joint.min.css" />
+  <link rel="stylesheet" type="text/css" href="/css/style.css" />
 
-  <script src="node_modules/jquery/dist/jquery.min.js"></script>
-  <script src="node_modules/lodash/index.js"></script>
-  <script src="node_modules/backbone/backbone-min.js"></script>
-  <script src="node_modules/jointjs/dist/joint.min.js"></script>
-  <script src="node_modules/jointjs/dist/joint.shapes.devs.min.js"></script>
-  <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="/jquery/dist/jquery.min.js"></script>
+  <script src="/lodash/index.js"></script>
+  <script src="/backbone/backbone-min.js"></script>
+  <script src="/jointjs/dist/joint.min.js"></script>
+  <script src="/jointjs/dist/joint.shapes.devs.min.js"></script>
+  <script src="/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="/rdfstore/dist/rdfstore.js"></script>
+
 </head>
 
 <body>
@@ -55,19 +57,19 @@
       <div class="panel-body" id="toolbox">
         <div id="toolboxSection" class="form-inline">
             <div class="form-group">
-              <label>Name</label>
+              <label>Name:</label>
               <input class="form-control" id="nodeName"/>
             </div>
             <div class="form-group">
-              <label>Domain:</label>
-              <select class="form-control" id="domain" disabled>
+              <label>Graph Type:</label>
+              <select class="form-control" id="graphType" disabled>
                 <option value="source">Source Model</option>
                 <option value="correspondence">Correspondence Model</option>
                 <option value="target">Target Model</option>
               </select>
             </div>
             <div class="form-group">
-              <label>Type:</label>
+              <label>Node Type:</label>
               <select class="form-control" id="nodeType">
                 <option value="produceNode">Produce Node</option>
                 <option value="contextNode">Context Node</option>
@@ -75,14 +77,52 @@
                 <option value="constraintNode">Constraint Node</option>
               </select>
             </div>
+            <div class="form-group" >
+              <label>Domain:</label>
+              <input class="form-control" list="domains" name="domains" id="nodeDomain">
+                <datalist id="domains">
+                </datalist>
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="panel-title">Editor Settings</div>
+      </div>
+      <div class="panel-body" id="toolbox">
+        <div id="toolboxSection" class="form-inline">
+          <div class="form-group">
+            <label>RuleStore Adresse:</label>
+            <input class="form-control" id="endpoint" size="50"/>
+          </div>
+          <div class="form-group">
+            <label>RuleStore NamedGraph:</label>
+            <input class="form-control" id="namedGraph" size="50"/>
+          </div>
+          <br>
+          <div class="form-group">
+            <label>Source Meta-Model:</label>
+            <select class="form-control" id="sourceMetaModel">
+              <option value="emptySourceMetaModel">Empty</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Target Meta-Model:</label>
+            <select class="form-control" id="targetMetaModel"/>
+              <option value="emptyTargetMetaModel">Empty</option>
+            </select>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <script src="js/tggShapes.js"></script>
-  <script src="js/tgg_editor.js"></script>
-  <script src="js/example_graph.js"></script>
+  <script src="/js/example_values.js"></script>
+  <script src="/js/tggShapes.js"></script>
+  <script src="/js/tgg_editor.js"></script>
+  <script src="/js/example_graph.js"></script>
+
 </body>
 
 </html>

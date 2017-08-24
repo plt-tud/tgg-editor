@@ -4,22 +4,28 @@ var Node = joint.shapes.basic.Rect.define('tgg.node.BasicNode', {
     width: 115,
     height: 30
   },
-  domain: null
+  graphType: null
 });
 
 var ProduceNode = Node.define('tgg.node.ProduceNode', {
   markup: '<g class="scalable node produceNode"><rect/></g><text/>',
-  nodeType: 'produceNode'
+  nodeType: 'produceNode',
+  nodeDomain: 'none',
+  graphType: 'none'
 });
 
 var ContextNode = Node.define('tgg.node.ContextNode', {
   markup: '<g class="scalable node contextNode"><rect/></g><text/>',
-  nodeType: 'contextNode'
+  nodeType: 'contextNode',
+  nodeDomain: 'none',
+  graphType: 'none'
 });
 
 var NacNode = Node.define('tgg.node.NacNode', {
   markup: '<g class="scalable node nacNode"><rect/></g><text/>',
-  nodeType: 'nacNode'
+  nodeType: 'nacNode',
+  nodeDomain: 'none',
+  graphType: 'none'
 });
 
 var ConstraintNode = Node.define('tgg.node.ConstraintNode', {
@@ -47,7 +53,8 @@ var CorrespondenceNode = joint.shapes.basic.Path.define('tgg.node.CorrNode', {
     },
   },
   /* Weitere Attribute des Knotens*/
-  nodeType: 'corrNode'
+  nodeType: 'corrNode',
+  graphType: 'none'
 });
 
 var Domain = joint.shapes.basic.Rect.define('tgg.domain', {
@@ -67,5 +74,5 @@ var Domain = joint.shapes.basic.Rect.define('tgg.domain', {
       transform: 'matrix(1,0,0,1,0,-240)'
     }
   },
-  domain: null
+  graphType: null
 });

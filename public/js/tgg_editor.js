@@ -1,9 +1,6 @@
 var ConstraintElementView = joint.dia.ElementView.extend({
   events: {
     mouseover: function(evt, x, y) {
-      //  '<button class="delete">x</button>',
-      var size = this.model.get('size');
-      var position = this.model.get('position');
       //console.log("Mouse over new element", this.model);
     }
   }
@@ -180,6 +177,7 @@ var selectedCell = null;
 var selectedElement = null;
 
 function setPos(event) {
+  selectedCellView.unhighlight();
   newHeight = (event.pageY - firstClickY);
   newWidth = (event.pageX - firstClickX);
   newHeight = (newHeight - (newHeight % 15)) / 15;
@@ -189,28 +187,30 @@ function setPos(event) {
   newWidth = width + newWidth * 15;
 
   selectedCell.resize(newWidth, newHeight);
-  $(".editNode").height(newHeight + 40);
-  $(".editNode").width(newWidth + 40);
+  $("#editNode").height(newHeight + 40);
+  $("#editNode").width(newWidth + 40);
   selectedCell.set('position', {
     x: posX,
     y: posY
   });
+  selectedCellView.highlight();
 }
 
 paper.on('cell:pointerdown', function(cellView, evt, x, y) {
   selectCell(cellView);
   var cell = cellView.model;
+
   if (cellView.model.get('type').startsWith('tgg.node')) {
 
     if (cell.get('parent')) {
       graph.getCell(cell.get('parent')).unembed(cell);
     }
 
-    if ($(".editNode").attr('model-id') != cell.get('id')) {
-      $(".editNode").remove();
+    if ($("#editNode").attr('model-id') != cell.get('id')) {
+      $("#editNode").remove();
       showEditBox();
       cell.on('change:position', function() {
-        $(".editNode").css('margin', (cellView.model.get('position').y - 20) + 'px 0 0 ' + (cellView.model.get('position').x - 20) + 'px');
+        $("#editNode").css('margin', (cellView.model.get('position').y - 20) + 'px 0 0 ' + (cellView.model.get('position').x - 20) + 'px');
         paper.fitToContent({
           minWidth: $('#paperArea').width() - 15,
           minHeight: $('#paperArea').height() - 15
@@ -220,7 +220,7 @@ paper.on('cell:pointerdown', function(cellView, evt, x, y) {
       $(document).ready(function() {
         $(".deleteBtn").click(function() {
           cellView.remove();
-          $(".editNode").remove();
+          $("#editNode").remove();
         });
 
         $(".resizeBtn").on('mousedown', function(event) {
@@ -241,7 +241,7 @@ paper.on('cell:pointerdown', function(cellView, evt, x, y) {
         });
 
         $(".addLinkBtn").click(function() {
-          $(".editNode").append("<div class='btnMenu'></div>");
+          $("#editNode").append("<div class='btnMenu'></div>");
           $(".btnMenu").append("<ul id='btnMenuList'>");
           switch (cellView.model.get('nodeType')) {
             case "contextNode":
@@ -357,86 +357,181 @@ paper.on('cell:pointerdown', function(cellView, evt, x, y) {
             $(".btnMenu").remove();
           });
 
-
           $("#newRelatLink").click(function() {
 
-            // Von welchem Typ ist der Anfangsknoten?
-            var color = 0;
-            var strokeDasharray = 0;
-            switch (cellView.model.get('nodeType')) {
-              case "contextNode":
-                color = contextNodeColor;
-                break;
-              case "produceNode":
-                color = produceNodeColor;
-                break;
-              case "nacNode":
-                color = nacNodeColor;
-                break;
-              case "constraintNode":
-                color = constraintNodeColor;
-                strokeDasharray = 2, 5;
-                break;
-            }
+            $(".btnMenu").append("<ul id='relatLinkMenuList'>");
 
-
-            var linkView = paper.getDefaultLink()
-              .set({
-                'source': {
-                  id: cellView.model.get('id')
-                },
-                'target': {
-                  x: x,
-                  y: y
-                },
-                'attrs': {
-                  '.connection': {
-                    'stroke-width': 1.5,
-                    stroke: color,
-                    'stroke-dasharray': strokeDasharray
-                  }
-                },
-              })
-              .addTo(paper.model)
-              .findView(paper);
-
-            link.findView(paper)
-            // initiate the linkView arrowhead movement
-            linkView.startArrowheadMove('target');
-
-            $(document).on({
-              'mousemove.example': onDrag,
-              'mouseup.example': onDragEnd
-            }, {
-              // shared data between listeners
-              view: linkView,
-              paper: paper
-            });
-
-            function onDrag(evt) {
-              // transform client to paper coordinates
-              var p = evt.data.paper.snapToGrid({
-                x: evt.clientX,
-                y: evt.clientY
-              });
-
-              //corrNode.set('position', { x: p.x/2 +(cellView.model.position().x/2-25), y: p.y/2 + (cellView.model.position().y/2) });
-
-              // manually execute the linkView mousemove handler
-              evt.data.view.pointermove(evt, p.x, p.y);
-            }
-
-            function onDragEnd(evt) {
-              // manually execute the linkView mouseup handler
-              evt.data.view.pointerup(evt);
-              $(document).off('.example');
-            }
-            $(".btnMenu").remove();
+            $("#relatLinkMenuList").append("<li class='newNode' id='relatLink'>Relation Link</li>");
+            $("#relatLinkMenuList").append("<li class='newNode' id='emptyNode'>Empty Node</li>");
+            var data = {};
+            data.endpoint = $('#endpoint').val();
+            data.namedGraph = $('#namedGraph').val();
+            data.metaModel = $("#sourceMetaModel").val();
+            data.nodeDomain = selectedCell.get('nodeDomain');
+            JSON.stringify(data);
+            $.ajax({type: "POST", url: "http://localhost:8080/getMetaModelEntries", dataType: 'json', data: {data}, success: function(result){
+              console.log("Hallo");
+              for (x in result) {
+                console.log(result[x]['a']['value']);
+                $("#relatLinkMenuList").append("<li class='newNode'>" + result[x]['a']['value'].split("#")[1] + "</li>");
+              }
+            }});
           });
         });
       });
     }
   }
+
+  $("#relatLinkMenuList").on('click', 'li', function() {
+    $(".btnMenu").remove();
+    // Von welchem Typ ist der Anfangsknoten?
+    console.log($(this).attr("id"));
+
+    var color = 0;
+    var strokeDasharray = 0;
+    switch (cellView.model.get('nodeType')) {
+      case "contextNode":
+        color = contextNodeColor;
+        break;
+      case "produceNode":
+        color = produceNodeColor;
+        break;
+      case "nacNode":
+        color = nacNodeColor;
+        break;
+      case "constraintNode":
+        color = constraintNodeColor;
+        strokeDasharray = 2, 5;
+        break;
+    }
+
+    if($(this).attr("id") == "relatLink") {
+
+      var linkView = paper.getDefaultLink()
+        .set({
+          'source': {
+            id: cellView.model.get('id')
+          },
+          'target': {
+            x: x,
+            y: y
+          },
+          'attrs': {
+            '.connection': {
+              'stroke-width': 1.5,
+              stroke: color
+            }
+          },
+        })
+        .addTo(paper.model)
+        .findView(paper);
+
+      // initiate the linkView arrowhead movement
+      linkView.startArrowheadMove('target');
+
+      $(document).on({
+        'mousemove.example': onDrag,
+        'mouseup.example': onDragEnd
+      }, {
+        // shared data between listeners
+        view: linkView,
+        paper: paper
+      });
+
+      function onDrag(evt) {
+        // transform client to paper coordinates
+        var p = evt.data.paper.snapToGrid({
+          x: evt.clientX,
+          y: evt.clientY
+        });
+
+        // manually execute the linkView mousemove handler
+        evt.data.view.pointermove(evt, p.x, p.y);
+      }
+
+      function onDragEnd(evt) {
+        // manually execute the linkView mouseup handler
+        evt.data.view.pointerup(evt);
+
+      }
+
+    }
+    else {
+      var color = 0;
+      var strokeDasharray = 0;
+      var newNode = "";
+      switch (cellView.model.get('nodeType')) {
+        case "contextNode":
+          newNode = new ContextNode();
+          newNode.set('nodeType', "contextNode");
+          newNode.attr('path/stroke', contextNodeColor);
+          color = contextNodeColor;
+          break;
+        case "produceNode":
+          newNode = new ProduceNode();
+          newNode.set('nodeType', "produceNode");
+          newNode.attr('path/stroke', produceNodeColor);
+          color = produceNodeColor;
+          break;
+        case "nacNode":
+          color = nacNodeColor;
+          break;
+        case "constraintNode":
+          color = constraintNodeColor;
+          strokeDasharray = 2, 5;
+          break;
+      }
+
+      newNode.attr('text/text', $(this).text());
+      newNode.set('position', {
+        x: cellView.model.position().x,
+        y: cellView.model.position().y
+      });
+
+      var link = new joint.dia.Link({
+        source: {
+          id: cellView.model.get('id')
+        },
+        target: {
+          id: newNode.id
+        },
+        attrs: {
+          '.connection': {
+            'stroke-width': 1.5,
+            stroke: color
+          }
+        },
+      });
+
+      graph.addCells([newNode, link]);
+
+      $(document).on({
+        'mousemove.example': onDrag,
+        'mouseup.example': onDragEnd
+      }, {
+        paper: paper
+      });
+
+      function onDrag(evt) {
+        // transform client to paper coordinates
+        var p = evt.data.paper.snapToGrid({
+          x: evt.clientX,
+          y: evt.clientY
+        });
+
+        newNode.set('position', {
+          x: p.x,
+          y: p.y
+        });
+      }
+
+      function onDragEnd(evt) {
+        // manually execute the linkView mouseup handler
+        evt.data.paper.pointerup(evt);
+        $(document).off('.example');
+      }
+    }
+  });
 });
 
 // See for nested graphs: http://resources.jointjs.com/tutorial/hierarchy
@@ -454,7 +549,7 @@ paper.on('cell:pointerup', function(cellView, evt, x, y) {
     // Prevent recursive embedding.
     if (cellViewBelow && cellViewBelow.model.get('parent') !== cell.id) {
       cellViewBelow.model.embed(cell);
-      cell.set("domain", cellViewBelow.model.get('domain'));
+      cell.set("graphType", cellViewBelow.model.get('graphType'));
     }
     updateToolbox(cellView);
   }
@@ -462,14 +557,14 @@ paper.on('cell:pointerup', function(cellView, evt, x, y) {
 
 paper.on('blank:pointerdown', function(evt, x, y) {
   selectCell(null);
-  $(".editNode").remove();
+  $("#editNode").remove();
 });
 
 function showEditBox() {
   var size = selectedCell.get('size');
   var position = selectedCell.get('position');
   $("#paper").append(`
-    <div class='editNode' model-id="${selectedCell.get('id')}"
+    <div id='editNode' model-id="${selectedCell.get('id')}"
           style="position: absolute;
                 margin: ${position.y - 20}px 0 0 ${position.x - 20}px;
                 height: ${size.height + 40}px;
@@ -483,14 +578,18 @@ function showEditBox() {
 
 function selectCell(cellView) {
   if (selectedCellView) {
-    selectedCellView.unhighlight();
+    if(!selectedCell.isLink()) {
+      selectedCellView.unhighlight();
+    }
   }
   console.log(cellView);
   if (cellView) {
     selectedCellView = cellView;
     selectedCell = cellView.model;
     selectedElement = V(cellView.el).findOne("g");
-    selectedCellView.highlight();
+    if(!selectedCell.isLink()) {
+      selectedCellView.highlight();
+    }
   }
   else {
     selectedCellView = null;
@@ -502,20 +601,45 @@ function selectCell(cellView) {
 
 function updateToolbox() {
   if (selectedCell) {
-    $('#nodeName').val(selectedCell.get('attrs').text.text);
-    $('#nodeType').val(selectedCell.get('nodeType', "none"));
-    $('#domain').val(selectedCell.get('domain', "none"));
+    if(selectedCell.isLink()) {
+      console.log("Link");
+    }
+    else {
+      $('#nodeName').val(selectedCell.get('attrs').text.text);
+      $('#nodeType').val(selectedCell.get('nodeType', "none"));
+      $('#graphType').val(selectedCell.get('graphType', "none"));
+      $('#nodeDomain').val(selectedCell.get('nodeDomain', ""));
+    }
   }
   else {
     $('#nodeName').val("");
     $('#nodeType').val("");
-    $('#domain').val("");
+    $('#graphType').val("");
+    $('#nodeDomain').val("");
   }
 }
 
 function initToolboxBehaviour() {
   $("#nodeName").keyup(function() {
     selectedCell.attr('text/text', $("#nodeName").val());
+  });
+
+  /* Toolbox
+  */
+  $("#nodeDomain").on('input', function () {
+    $("#domains").empty();
+    console.log($("#sourcePraefix").val().split(":"));
+    $.ajax({type: "POST", url: "http://localhost:8080/sparql", dataType: "json", data: $("#nodeDomain").val(), success: function(result){
+      for (x in result) {
+
+        console.log(result[x]['a']['value'].find('#'));
+        var option = document.createElement('option');
+
+        option.value = result[x]['a']['value'];
+        $("#domains")[0].appendChild(option);
+      }
+    }});
+    selectedCell.set('nodeDomain', $("#nodeDomain").val());
   });
 
   $("#nodeType").change(function() {
