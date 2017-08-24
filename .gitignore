@@ -8,6 +8,7 @@
 # dependencies
 /node_modules
 
+
 # IDEs and editors
 /.idea
 .project
@@ -40,12 +41,6 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
-Würde .angular-cli.json löschen
-Würde .editorconfig löschen
-Würde README.md löschen
-Würde e2e/ löschen
-Würde karma.conf.js löschen
-Würde protractor.conf.js löschen
-Würde src/ löschen
-Würde tsconfig.json löschen
-Würde tslint.json löschen
+
+/tools
+/run

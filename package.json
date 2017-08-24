@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "ng": "ng",
+    "run": "node app.js",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
@@ -31,7 +32,12 @@
     "lodash": "^3.10.1",
     "ngx-store": "^1.1.7",
     "rxjs": "^5.1.0",
-    "zone.js": "^0.8.4"
+    "zone.js": "^0.8.4",
+    "http": "latest",
+    "express": "^4.15.4",
+    "rdfstore": "^0.9.17",
+    "sparql-client-2": "^0.6.1",
+    "body-parser": "^1.17.2"
   },
   "devDependencies": {
     "@angular/cli": "1.0.2",

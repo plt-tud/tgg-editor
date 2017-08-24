@@ -3,13 +3,13 @@
 var domain_source = new Domain({
     position: { x: 0, y: 0 },
     attrs: { rect: { fill: '#E74C3C' }, text: { text: 'Source'} },
-    domain: "source"
+  domain: "source",
   }).addTo(graph);
 var domain_correspondence = new Domain({
     position: { x: 500, y: 0 },
     size: { width: 400 },
     attrs: { rect: { fill: '#F1C40F'}, text: { text: 'Correspondence'} },
-    domain: "correspondence"
+  domain: "correspondence",
   }).addTo(graph);
 var domain_target = new Domain({
     position: { x: 900, y: 0 },
@@ -20,28 +20,59 @@ var domain_target = new Domain({
 
 
 var rect2 = new ContextNode({
+  < < < < < < < HEAD
+:
+js / example_graph.js
   position: {x: 50, y: 50},
   attrs: { text: {text: "?device"} },
   domain: "source"
+  === === =
+    position
+:
+{
+  x: 100, y
+:
+  50
+}
+,
+attrs: {
+  text: {
+    text: "cm:Subplant"
+  }
+}
+,
+domain: "source",
+  nodeDomain
+:
+"cm:Subplant"
+>>> >>> > origin / server - backend
+:
+public
+/js/
+example_graph.js
 }).addTo(graph);
 var rect3 = new ContextNode({
   position: {x: 300, y: 50},
-  attrs: { text: {text: "mso:Pump"} },
-  domain: "source"
+  attrs: {text: {text: "cm:Device"}},
+  domain: "source",
+  nodeDomain: "cm:Device"
 }).addTo(graph);
 var rect4 = new ProduceNode({
   position: {x: 50, y: 150},
   attrs: { text: {text: "?fitting"} },
-  domain: "source"
+  domain: "source",
+  nodeDomain: "?fitting"
 }).addTo(graph);
 var rect5 = new ProduceNode({
   position: {x: 300, y: 150},
-  attrs: { text: {text: "mso:Fitting"} },
-  domain: "source"
+  attrs: {text: {text: "cm:Pump"}},
+  domain: "source",
+  nodeDomain: "cm:Pump"
 }).addTo(graph);
 
 
-
+<<<<<<<
+HEAD:js / example_graph.js
 var link = new Connection({
     source: { id: rect2.id },
     target: { id: rect4.id },
@@ -54,6 +85,42 @@ var link = new Connection({
 
 var link2 = new Connection({
     source: { id: rect2.id },
+=== === =
+var link = new joint.dia.Link({
+  source: {id: rect3.id},
+  target: {id: rect2.id},
+  attrs: {
+    '.test': 2,
+    '.connection': {
+      'stroke-width': 1.5, stroke: '#000000'
+    }
+  },
+  class: "test"
+}).addTo(graph);
+link.label(0, {
+  position: .5,
+  attrs: {
+    rect: {fill: "grey", opacity: 0.5},
+    text: {fill: 'blue', text: 'Label'}
+  }
+});
+var link2 = new joint.dia.Link({
+  source: {id: rect5.id},
+  target: {id: rect3.id},
+  attrs: {
+    '.connection': {
+      'stroke-width': 1.5, stroke: '#00b500'
+    }
+  },
+}).addTo(graph);
+
+var link3 = new joint.dia.Link({
+    source: {id: rect4.id},
+  >>> >>> > origin / server - backend
+:
+public
+/js/
+example_graph.js
     target: { id: rect3.id },
     attrs: {
       '.connection': {
