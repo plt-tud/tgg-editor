@@ -1,0 +1,10 @@
+<h2>Settings</h2>
+
+<div class="form-group">
+  <div class="form-control-label">TGG Rule Store Endpoint</div>
+  <input class="form-control" type="text" [(ngModel)]="settings.endpoint">
+  <div class="col-form-label">Named Graph containing TGG Rule Store</div>
+  <input class="form-control" type="text" [(ngModel)]="settings.namedGraph">
+</div>
+<button class="btn btn-primary" (click)="back()">Back</button>
+

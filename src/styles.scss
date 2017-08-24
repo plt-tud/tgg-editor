@@ -1,7 +1,8 @@
-body {
-  padding-top: 70px;
-  font-family: sans-serif, Arial;
-}
+/* You can add global styles to this file, and also import other style files */
+@import '../node_modules/bootstrap/scss/bootstrap';
+
+$fa-font-path: '../node_modules/font-awesome/fonts';
+@import '../node_modules/font-awesome/scss/font-awesome';
 
 .node {
   stroke-width: 1.5;
@@ -31,18 +32,10 @@ body {
   width: 100%;
 }
 
-#stencil {}
-
-#paperArea {
-  height: 500px;
-}
-
-#paper {}
-
 button.deleteBtn {
   color: white;
   border: none;
-  background-image: url(../images/delete.png);
+  background-image: url(assets/images/delete.png);
   background-size: 15px 15px;
   background-repeat: no-repeat;
   width: 15px;
@@ -57,7 +50,7 @@ button.deleteBtn {
 button.addLinkBtn {
   color: white;
   border: none;
-  background-image: url(../images/link.png);
+  background-image: url(assets/images/link.png);
   background-size: 15px 15px;
   background-repeat: no-repeat;
   border-radius: 20px;
@@ -74,7 +67,7 @@ button.addLinkBtn {
 button.resizeBtn {
   color: white;
   border: none;
-  background-image: url(../images/resize.png);
+  background-image: url(assets/images/resize.png);
   background-size: 15px 15px;
   background-repeat: no-repeat;
   width: 15px;

@@ -1,0 +1,17 @@
+<div class="card">
+  <div class="card-header">
+    <div class="card-title"><h3>Rule 23</h3></div>
+  </div>
+  <div class="card-body">
+    <div id="stencilArea">
+    </div>
+    <div id="paperArea">
+    </div>
+    <div id="edit" *ngIf="selectedCell">
+      <button class='btn btn-outline-danger' (click)="deleteCell()">Delete</button>
+      <button class='btn btn-outline-primary' (click)="addRelationLink($event)">Add Relation Link</button>
+      <button class='btn btn-outline-primary' (click)="addCorrespondenceLink($event)">Add Correspondence Link</button>
+    </div>
+  </div>
+</div>
+<app-inspector [selectedCell]="selectedCell"></app-inspector>
