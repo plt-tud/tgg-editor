@@ -15,10 +15,17 @@ app.get('/', function (req, res) {
 
 });
 
+
+app.get('/api/test', function (req, res) {
+  console.log('/api/test');
+  res.send({test: "succesful"});
+});
+
+
 app.post('/sparql', function (req, res) {
 
   var data = req.body.data;
-  console.log(data);
+  console.log("/sparql", data);
   var SparqlHandler = require('./modules/sparql');
   rdfModule = new SparqlHandler(data.endpoint);
   // "/data/" Fuseki spezific

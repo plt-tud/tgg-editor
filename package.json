@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "ng": "ng",
-    "run": "node app.js",
+    "backend": "node app.js",
+    "frontend": "ng serve --proxy-config proxy.config.json",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
