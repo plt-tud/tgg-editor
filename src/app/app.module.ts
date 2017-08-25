@@ -13,6 +13,7 @@ import {InspectorComponent} from "./inspector/inspector.component";
 import {SettingsComponent} from "./settings/settings.component";
 import {WebStorageModule} from "ngx-store";
 import {SettingsService} from "./settings/settings.service";
+import {BackendService} from "./backend.service";
 
 @NgModule({
   declarations: [
@@ -30,7 +31,7 @@ import {SettingsService} from "./settings/settings.service";
     AppRoutingModule,
     WebStorageModule
   ],
-  providers: [SettingsService],
+  providers: [SettingsService, BackendService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

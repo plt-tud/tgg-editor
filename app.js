@@ -15,18 +15,23 @@ app.get('/', function (req, res) {
 
 });
 
+
+app.get('/api/test', function (req, res) {
+  console.log('/api/test');
+  res.send({test: "succesful"});
+});
+
+
 app.post('/sparql', function (req, res) {
 
   var data = req.body.data;
-  console.log(data);
+  console.log("/sparql", data);
   var SparqlHandler = require('./modules/sparql');
   rdfModule = new SparqlHandler(data.endpoint);
   // "/data/" Fuseki spezific
 
   var query = "Select ?a ?b FROM <" + data.namedGraph + "> WHERE {?a ?b " + data.nodeDomain + "} LIMIT 10";
-  rdfModule.executeQuery(query).then(bindings = > getResult(bindings)
-  )
-  ;
+  rdfModule.executeQuery(query).then(bindings => getResult(bindings));
 
   function getResult(result) {
     res.send(result['bindings']);
@@ -51,18 +56,14 @@ app.post('/getMetaModelEntries', function (req, res) {
                       ?c tgg:endpoint ?endpoint. \
                       ?c tgg:namedGraph ?namedGraph \
                     }";
-  rdfModule.executeQuery(query).then(bindings = > getDomainInfos(bindings)
-  )
-  ;
+  rdfModule.executeQuery(query).then(bindings => getDomainInfos(bindings));
 
   function getDomainInfos(result) {
 
     var SparqlHandler1 = require('./modules/sparql');
     domainSPARQL = new SparqlHandler1(result['bindings'][0]['endpoint']['value']);
     var query = "Select ?a ?b FROM <" + result['bindings'][0]['namedGraph']['value'] + "> WHERE {?a ?b " + data.nodeDomain + "} LIMIT 10";
-    domainSPARQL.executeQuery(query).then(bindings = > getResult(bindings)
-  )
-    ;
+    domainSPARQL.executeQuery(query).then(bindings => getResult(bindings));
 
   };
 
@@ -82,9 +83,7 @@ app.post('/getRuleStore', function (req, res) {
   var SparqlHandler = require('./modules/sparql');
   rdfModule = new SparqlHandler(data.endpoint);
   var query = "Select ?domainName FROM <" + data.namedGraph + "> WHERE {?RuleStore tgg:hasDomain ?Domain. ?Domain tgg:name ?domainName}";
-  rdfModule.executeQuery(query).then(bindings = > getResult(bindings)
-  )
-  ;
+  rdfModule.executeQuery(query).then(bindings => getResult(bindings));
 
   function getResult(result) {
     res.send(result['bindings']);
