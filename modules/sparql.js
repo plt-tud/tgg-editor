@@ -22,19 +22,17 @@ var SparqlHandler = module.exports = function SparqlHandler(endpoint) {
   SparqlHandler.prototype.executeQuery = function (sQuery) {
 
     console.log("Query: " + sQuery);
-    that = this   // Fix to call class methode setResult
+    that = this;   // Fix to call class methode setResult
     return that.client.query(sQuery)
       //.execute({format: {resource: 'name'}})
         .execute()
-        .then(response = > Promise.resolve(response.results)
-    )
-    .
-    catch(function (error) {
-      console.log(error);
-      // logs '400'
-      console.log(err.httpStatus);
-      // logs 'HTTP Error: 400 Bad Request'
-    });
+        .then(response => Promise.resolve(response.results))
+        .catch(function (error) {
+          console.log(error);
+          // logs '400'
+          console.log(err.httpStatus);
+          // logs 'HTTP Error: 400 Bad Request'
+        });
   };
 
   SparqlHandler.prototype.setResult = function (queryResult) {
