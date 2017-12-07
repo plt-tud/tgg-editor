@@ -3,7 +3,7 @@
 DS_URI=http://localhost:3030/transformation
 GRAPH_TGG=http://eatld.et.tu-dresden.de/tgg
 
-export FUSEKI_HOME=./tools/apache-jena-fuseki/ 
+export FUSEKI_HOME=./tools/apache-jena-fuseki/
 
 #######################################
 ## FUSEKI Functions                  ##
@@ -30,7 +30,7 @@ function fgupdate {
 
 function main {
     GRAPH=$1
- 
+
     #fput $DS_URI $GRAPH $SPARQL_QUERY.ttl
     fupdate $DS_URI "CREATE SILENT GRAPH <$GRAPH>"
 		query="`cat ./tools/prefixes.rq` INSERT DATA { GRAPH <$GRAPH> {
@@ -50,7 +50,7 @@ function main {
 												<$GRAPH/Ruleset1> tgg:hasRule <$GRAPH/Rule2>.
 												<$GRAPH/Rule2> a tgg:Rule;
 													tgg:author \"Er\";
-													tgg:name \"CAETankToHMITank\".	
+													tgg:name \"CAETankToHMITank\".
 
 												<$GRAPH/Ruleset1> tgg:hasTargetDomain <$GRAPH/DomainCAE>.
 												<$GRAPH/DomainCAE> a tgg:Domain;
@@ -76,7 +76,7 @@ function main {
 
 												<$GRAPH/RuleStore> tgg:hasDomain <$GRAPH/DomainCAE>.
 												<$GRAPH/RuleStore> tgg:hasDomain <$GRAPH/DomainHMI>.
-												
+
                     }}"
 		#echo $query
     fupdate $DS_URI "$query"
@@ -84,7 +84,7 @@ function main {
 
 function target {
     GRAPH=$1
- 
+
     #fput $DS_URI $GRAPH $SPARQL_QUERY.ttl
     fupdate $DS_URI "CREATE GRAPH <$GRAPH>"
     fupdate $DS_URI "`cat ./tools/prefixes.rq` INSERT DATA { GRAPH <$GRAPH> {
@@ -93,7 +93,7 @@ function target {
 
 cm:Subplant a rdfs:Class;
     rdfs:label \"subclass\".
-    
+
 cm:Device a rdfs:Class;
     rdfs:label \"device\".
 
@@ -111,12 +111,12 @@ cm:Valve a rdfs:Class;
 
 cm:Sensor a rdfs:Class;
     rdfs:label \"sensor\".
-    
+
 cm:isConnectedTo a owl:ObjectProperty;
     rdfs:label \"is connected to\";
     rdfs:domain cm:Device;
     rdfs:range cm:Device.
-    
+
 cm:hasSubPlant a owl:ObjectProperty;
     rdfs:label \"has subplant\";
     rdfs:domain cm:Plant;
@@ -138,7 +138,7 @@ cm:hasSensor a owl:ObjectProperty;
 
 function source {
  GRAPH=$1
- 
+
     #fput $DS_URI $GRAPH $SPARQL_QUERY.ttl
     fupdate $DS_URI "CREATE GRAPH <$GRAPH>"
     fupdate $DS_URI "`cat ./tools/prefixes.rq` INSERT DATA { GRAPH <$GRAPH> {
@@ -181,11 +181,10 @@ saveGraphIntoPNG "hmiGraph" "http://eatld.et.tu-dresden.de/hmiGraph"
 
 
 # Get file path
-echo ${0}
-ScriptPath=$(dirname $(readlink -f ${0}))
-echo $ScriptPath
+#echo ${0}
+#ScriptPath=$(dirname $(readlink -f ${0}))
+#echo $ScriptPath
 #cd $ScriptPath
-forever --watch ./app.js 
+#forever --watch ./app.js 
 
 #npm start
-
