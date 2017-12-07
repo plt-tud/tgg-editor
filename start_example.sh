@@ -175,9 +175,10 @@ function saveGraphIntoPNG {
 	./tools/rdf-uml-diagram/rdfUmlDiagram.py ./tools/Debug/$FILENAME.ttl --show-classes -o ./tools/Debug/$FILENAME.png #--hide-instances
 }
 
-saveGraphIntoPNG "tggGraph" "http://eatld.et.tu-dresden.de/tggGraph"
-saveGraphIntoPNG "caeGraph" "http://eatld.et.tu-dresden.de/caeGraph"
-saveGraphIntoPNG "hmiGraph" "http://eatld.et.tu-dresden.de/hmiGraph"
+#DEBUG
+#saveGraphIntoPNG "tggGraph" "http://eatld.et.tu-dresden.de/tggGraph"
+#saveGraphIntoPNG "caeGraph" "http://eatld.et.tu-dresden.de/caeGraph"
+#saveGraphIntoPNG "hmiGraph" "http://eatld.et.tu-dresden.de/hmiGraph"
 
 
 # Get file path
